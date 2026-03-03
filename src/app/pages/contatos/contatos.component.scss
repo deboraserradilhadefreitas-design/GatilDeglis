@@ -1,10 +1,13 @@
 .color-name{
-    color: rgba(43, 19, 179, 0.733);
+    color: rgba(64, 30, 253, 0.733);
     font-weight: bold;
+    font-size: 20px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 
 .container {
+    width: 90%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,13 +16,13 @@
 }
 
 .content{
-    width: 90%;
+    width: 50%;
     max-width: 450px; /* Evita que fique muito largo em telas grandes */
     background-color: rgb(151, 176, 231);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 0;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Sombra leve para destaque */
 }
@@ -32,7 +35,7 @@
     padding-left: 4px; 
     color: white;
     font-size: 1.2rem;           /* o rem se adapta ao comportamento do navegador */
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 }
 
 
@@ -57,7 +60,7 @@ mat-form-field {
 button{
     height: 40px;
     width: 120px;
-    margin-top: 20px;
+    margin-top: 5px;
     color: white;
     font-size: 1rem;
     background-color: rgb(91, 101, 241);

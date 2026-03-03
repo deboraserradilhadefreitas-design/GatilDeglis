@@ -1,0 +1,58 @@
+
+
+<div class="form-container">
+    <form [formGroup]="gatoForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">   <!-- enctype =  vai ser enviado ao servidor.  multipart/form-data = dados binários como imagens ou arquivos-->
+        <h2>Cadastro de Gatinhos 😺</h2>
+        
+        <!-- Upload da imagem -->
+        <mat-label>Imagem do Gato:</mat-label>
+        <input type="file" (change)="onFileChange($event)" accept="image/*">
+        <div *ngIf="imagemPreview">
+        <p>Preview da imagem:</p>
+        <img [src]="imagemPreview" width="150" height="150" style="object-fit: cover; border: 1px solid #ccc;" />
+        </div>
+    
+    
+    
+        <mat-form-field appearance="outline">
+            <mat-label>Nome:</mat-label>
+            <input matInput formControlName="nome" type="text" >
+        </mat-form-field>
+    
+        
+        <mat-form-field appearance="outline">
+            <mat-label>Idade:</mat-label>
+            <input matInput formControlName="idade" type="number" >
+        </mat-form-field>
+
+
+        
+        <mat-form-field appearance="outline">
+            <mat-label>Raça:</mat-label>
+            <input matInput formControlName="raca" type="text" >
+        </mat-form-field>
+    
+        
+        <mat-form-field appearance="outline">
+            <mat-label>Sexo:</mat-label>
+            <mat-select formControlName="sexo">
+            <mat-option value="">Selecione</mat-option>
+            <mat-option value="Macho">Macho</mat-option>
+            <mat-option value="Fêmea">Fêmea</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Coloração:</mat-label>
+            <input matInput formControlName="coloracao" type="text" >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Observações:</mat-label>
+            <textarea matInput formControlName="observacoes"></textarea>
+        </mat-form-field>
+
+        <!-- Botão de Enviar -->
+        <button class="btn-submit" type="submit">Cadastrar Gatinho</button>
+    </form>
+</div>
