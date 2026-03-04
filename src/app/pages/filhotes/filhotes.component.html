@@ -1,108 +1,59 @@
 <div class="filhotes-container">
   <header>
-    <h1>Filhotes Disponíveis</h1>
+    <h1>🐱 Filhotes Disponíveis</h1>
+    <p class="subtitle">Conheça nossos adoráveis gatinhos</p>
   </header>
 
-  <!-- Mensagem de feedback -->
-  <div *ngIf="mensagem" [ngClass]="'mensagem ' + mensagemTipo">
-    {{ mensagem }}
+  <!-- Carregando -->
+  <div *ngIf="carregando" class="carregando">
+    <p>Carregando filhotes...</p>
   </div>
 
-  <!-- Botão para mostrar/esconder formulário -->
-  <button class="btn-novo" (click)="toggleFormulario()">
-    {{ mostraFormulario ? 'Cancelar' : 'Cadastrar Novo Gato' }}
-  </button>
-
-  <!-- Formulário de cadastro -->
-  <div *ngIf="mostraFormulario" class="formulario-container">
-    <h2>Cadastro de Gato</h2>
-    <form [formGroup]="formulario" (ngSubmit)="enviarFormulario()">
-      <div class="form-group">
-        <label for="nome">Nome:</label>
-        <input
-          type="text"
-          id="nome"
-          formControlName="nome"
-          placeholder="Digite o nome do gato"
-          required
-        />
-        <span *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="erro">
-          Nome é obrigatório e deve ter pelo menos 3 caracteres
-        </span>
-      </div>
-
-      <div class="form-group">
-        <label for="raca">Raça:</label>
-        <input
-          type="text"
-          id="raca"
-          formControlName="raca"
-          placeholder="Digite a raça do gato"
-          required
-        />
-        <span *ngIf="formulario.get('raca')?.invalid && formulario.get('raca')?.touched" class="erro">
-          Raça é obrigatória e deve ter pelo menos 2 caracteres
-        </span>
-      </div>
-
-      <div class="form-group">
-        <label for="sexo">Sexo:</label>
-        <select id="sexo" formControlName="sexo" required>
-          <option value="">Selecione o sexo</option>
-          <option value="macho">Macho</option>
-          <option value="fêmea">Fêmea</option>
-        </select>
-        <span *ngIf="formulario.get('sexo')?.invalid && formulario.get('sexo')?.touched" class="erro">
-          Sexo é obrigatório
-        </span>
-      </div>
-
-      <div class="form-group">
-        <label for="coloracao">Coloração:</label>
-        <input
-          type="text"
-          id="coloracao"
-          formControlName="coloracao"
-          placeholder="Digite a coloração do gato"
-          required
-        />
-        <span *ngIf="formulario.get('coloracao')?.invalid && formulario.get('coloracao')?.touched" class="erro">
-          Coloração é obrigatória e deve ter pelo menos 2 caracteres
-        </span>
-      </div>
-
-      <div class="form-group">
-        <label for="observacoes">Observações:</label>
-        <textarea
-          id="observacoes"
-          formControlName="observacoes"
-          placeholder="Digite observações sobre o gato"
-        ></textarea>
-      </div>
-
-      <button type="submit" class="btn-enviar" [disabled]="!formulario.valid || carregando">
-        {{ carregando ? 'Cadastrando...' : 'Cadastrar Gato' }}
-      </button>
-    </form>
+  <!-- Sem gatos -->
+  <div *ngIf="!carregando && gatos.length === 0" class="sem-gatos">
+    <p>Nenhum filhote disponível no momento.</p>
   </div>
 
   <!-- Lista de filhotes -->
-  <main id="lista-filhotes">
-    <div *ngIf="gatos.length === 0" class="sem-gatos">
-      <p>Nenhum gato cadastrado no momento.</p>
-    </div>
+  <div class="gatos-grid" *ngIf="!carregando && gatos.length > 0">
+    <div *ngFor="let gato of gatos" class="card-gato">
+      <div class="card-imagem">
+        <img 
+          *ngIf="gato.imagem" 
+          [src]="gato.imagem" 
+          [alt]="gato.nome"
+          class="imagem"
+        />
+        <img 
+          *ngIf="!gato.imagem" 
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23E8F0FE' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='40' fill='%235E99F8'%3E🐱%3C/text%3E%3C/svg%3E"
+          alt="Sem imagem"
+          class="imagem placeholder"
+        />
+      </div>
 
-    <div *ngFor="let gato of gatos" class="card-filhote">
-      <div class="card-header">
+      <div class="card-info">
         <h3>{{ gato.nome }}</h3>
-        <button class="btn-deletar" (click)="deletarGato(gato.id)" title="Deletar">×</button>
-      </div>
-      <div class="card-body">
-        <p><strong>Raça:</strong> {{ gato.raca }}</p>
-        <p><strong>Sexo:</strong> {{ gato.sexo }}</p>
-        <p><strong>Coloração:</strong> {{ gato.coloracao }}</p>
-        <p *ngIf="gato.observacoes"><strong>Observações:</strong> {{ gato.observacoes }}</p>
+        
+        <div class="info-row">
+          <span class="label">Raça:</span>
+          <span class="valor">{{ gato.raca }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="label">Sexo:</span>
+          <span class="valor">{{ gato.sexo }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="label">Coloração:</span>
+          <span class="valor">{{ gato.coloracao }}</span>
+        </div>
+
+        <p *ngIf="gato.observacoes" class="observacoes">
+          <strong>Observações:</strong> {{ gato.observacoes }}
+        </p>
       </div>
     </div>
-  </main>
+  </div>
 </div>

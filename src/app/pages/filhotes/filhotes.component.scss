@@ -1,276 +1,133 @@
 .filhotes-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
+  padding: 80px 20px 40px;
 }
 
 header {
   text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 3px solid #ff6b6b;
+  margin-bottom: 50px;
 
   h1 {
-    color: #333;
-    font-size: 2.5rem;
     margin: 0;
-  }
-}
-
-/* Mensagens de feedback */
-.mensagem {
-  padding: 15px 20px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  font-weight: bold;
-  animation: fadeIn 0.3s ease-in;
-
-  &.sucesso {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-
-  &.erro {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Botão Novo */
-.btn-novo {
-  display: block;
-  margin: 0 auto 30px;
-  padding: 12px 30px;
-  background-color: #ff6b6b;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #ff5252;
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-}
-
-/* Formulário */
-.formulario-container {
-  background-color: white;
-  padding: 30px;
-  border-radius: 8px;
-  margin-bottom: 40px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  animation: slideDown 0.3s ease;
-
-  h2 {
-    color: #333;
-    margin-top: 0;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.form-group {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-
-  label {
+    color: #5E99F8;
+    font-size: 2.5rem;
     font-weight: bold;
-    margin-bottom: 8px;
-    color: #333;
-    font-size: 0.95rem;
   }
 
-  input,
-  select,
-  textarea {
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 0.3s ease;
-
-    &:focus {
-      outline: none;
-      border-color: #ff6b6b;
-      box-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
-    }
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-
-  .erro {
-    color: #dc3545;
-    font-size: 0.85rem;
-    margin-top: 5px;
+  .subtitle {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 10px 0 0 0;
   }
 }
 
-.btn-enviar {
-  padding: 12px 30px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 20px;
-
-  &:hover:not(:disabled) {
-    background-color: #218838;
-  }
-
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(0.98);
-  }
+.carregando {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 1.1rem;
+  color: #5E99F8;
 }
 
-/* Lista de filhotes */
-#lista-filhotes {
+.sem-gatos {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 1.2rem;
+}
+
+.gatos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-
-  .sem-gatos {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 40px 20px;
-    color: #999;
-    font-size: 1.1rem;
-  }
+  gap: 30px;
+  margin-top: 30px;
 }
 
-.card-filhote {
-  background-color: white;
-  border-radius: 8px;
+.card-gato {
+  background: white;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: slideIn 0.3s ease;
+  box-shadow: 0 2px 8px rgba(94, 153, 248, 0.15);
+  transition: all 0.3s ease;
+  border: 2px solid #f0f0f0;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(94, 153, 248, 0.25);
+    border-color: #5E99F8;
   }
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.card-header {
-  background-color: #ff6b6b;
-  color: white;
-  padding: 15px;
+.card-imagem {
+  width: 100%;
+  height: 250px;
+  background: linear-gradient(135deg, #E8F0FE 0%, #F0F8FF 100%);
+  overflow: hidden;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
 
-  h3 {
-    margin: 0;
-    font-size: 1.3rem;
+  .imagem {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    &.placeholder {
+      width: 80px;
+      height: 80px;
+    }
   }
 }
 
-.btn-deletar {
-  background-color: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 3px;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-}
-
-.card-body {
+.card-info {
   padding: 20px;
 
-  p {
-    margin: 10px 0;
-    color: #666;
-    line-height: 1.5;
+  h3 {
+    margin: 0 0 15px 0;
+    color: #5E99F8;
+    font-size: 1.5rem;
+  }
 
-    strong {
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    .label {
+      font-weight: bold;
       color: #333;
+    }
+
+    .valor {
+      color: #666;
     }
   }
 
-  p:last-child {
-    margin-bottom: 0;
+  .observacoes {
+    margin: 15px 0 0 0;
+    line-height: 1.5;
+    color: #666;
+    font-size: 0.95rem;
+    padding: 12px;
+    background-color: #F0F8FF;
+    border-left: 4px solid #5E99F8;
+    border-radius: 4px;
   }
 }
 
 /* Responsivo */
 @media (max-width: 768px) {
   .filhotes-container {
-    padding: 15px;
+    padding: 70px 15px 30px;
   }
 
   header h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
 
-  #lista-filhotes {
+  .gatos-grid {
     grid-template-columns: 1fr;
-  }
-
-  .formulario-container {
-    padding: 20px;
   }
 }
