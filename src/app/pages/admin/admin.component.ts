@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GatoService } from '../../services/gato.service';
 
 @Component({
   selector: 'app-admin',
@@ -7,56 +8,72 @@ import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms'
   styleUrl: './admin.component.scss'
 })
 export class AdminComponent {
-  gatoForm: FormGroup; // Cria o formulário reativo
-  imagemPreview: string | ArrayBuffer | null = null; // Para mostrar o preview da imagem
+  gatoForm: FormGroup;
+  imagemPreview: string | ArrayBuffer | null = null;
+  mensagem: string = '';
+  tipoMensagem: 'sucesso' | 'erro' = 'sucesso';
+  carregando: boolean = false;
+  imagemFile: File | null = null;
 
-
-
-
-  constructor(private fb: FormBuilder) {
-    // Inicializa o formulário com os campos e validações
-
+  constructor(private fb: FormBuilder, private gatoService: GatoService) {
     this.gatoForm = this.fb.group({
-      nome: ['', Validators.required], // Campo obrigatório
-      idade: ['', Validators.required], 
-      raca: ['', Validators.required], 
-      sexo: ['', Validators.required], 
-      coloracao: ['', Validators.required], 
-      observacoes: [''], // Opcional
-      imagem: [null, Validators.required] // Campo obrigatório (arquivo)
+      nome: ['', Validators.required],
+      raca: ['', Validators.required],
+      sexo: ['', Validators.required],
+      coloracao: ['', Validators.required],
+      observacoes: ['']
     });
   }
 
-
-
-  // Quando o usuário escolhe um arquivo (imagem)
-
   onFileChange(event: any) {
-    const file = event.target.files[0];     // Pega o primeiro arquivo enviado
+    const file = event.target.files[0];
     if (file) {
-      this.gatoForm.patchValue({ imagem: file }); // Atualiza o campo 'imagem' no formulário
+      this.imagemFile = file;
 
-      const reader = new FileReader();    // Cria um leitor de arquivos
+      const reader = new FileReader();
       reader.onload = () => {
-        this.imagemPreview = reader.result; // Guarda a imagem em base64 pra mostrar no preview
+        this.imagemPreview = reader.result;
       };
-      reader.readAsDataURL(file); // Lê o arquivo como URL base64
+      reader.readAsDataURL(file);
     }
   }
 
-
-
-
-  // Quando o formulário é enviado
-
   onSubmit() {
-    if (this.gatoForm.valid) {
-      console.log(this.gatoForm.value); // Mostra os dados no console
-      alert('Gatinho cadastrado com sucesso!');
-      this.gatoForm.reset(); // Limpa o formulário
-      this.imagemPreview = null; // Remove o preview
+    if (this.gatoForm.valid && this.imagemFile) {
+      this.carregando = true;
+      
+      // Criar FormData para enviar arquivo + dados
+      const formData = new FormData();
+      formData.append('nome', this.gatoForm.get('nome')?.value);
+      formData.append('raca', this.gatoForm.get('raca')?.value);
+      formData.append('sexo', this.gatoForm.get('sexo')?.value);
+      formData.append('coloracao', this.gatoForm.get('coloracao')?.value);
+      formData.append('observacoes', this.gatoForm.get('observacoes')?.value);
+      formData.append('imagem', this.imagemFile);
+
+      this.gatoService.criar(formData).subscribe({
+        next: (response) => {
+          if (response.sucesso) {
+            this.mensagem = '😺 Animal cadastrado com sucesso!';
+            this.tipoMensagem = 'sucesso';
+            this.gatoForm.reset();
+            this.imagemPreview = null;
+            this.imagemFile = null;
+          }
+          this.carregando = false;
+        },
+        error: (err) => {
+          this.mensagem = 'Erro ao cadastrar animal: ' + err.error?.erro || 'Erro desconhecido';
+          this.tipoMensagem = 'erro';
+          this.carregando = false;
+        }
+      });
+    } else if (!this.imagemFile) {
+      this.mensagem = 'Por favor, selecione uma imagem!';
+      this.tipoMensagem = 'erro';
     } else {
-      alert('Preencha todos os campos obrigatórios!');
+      this.mensagem = 'Por favor, preencha todos os campos obrigatórios!';
+      this.tipoMensagem = 'erro';
     }
   }
 }
