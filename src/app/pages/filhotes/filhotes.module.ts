@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FilhotesComponent } from './filhotes.component';
 import { FilhotesRoutingModule } from './filhotes-routing.module';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -10,7 +11,8 @@ import { FilhotesRoutingModule } from './filhotes-routing.module';
   ],
   imports: [
     CommonModule,
-    FilhotesRoutingModule
+    FilhotesRoutingModule,
+    SharedModule
   ]
 })
 export class FilhotesModule { }

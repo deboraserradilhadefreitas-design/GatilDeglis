@@ -10,6 +10,7 @@ export interface Gato {
   sexo: 'Macho' | 'Fêmea';
   coloracao: string;
   observacoes?: string;
+  status?: 'Disponível' | 'Vendido' | 'Reservado';
   imagem?: string;
 }
 

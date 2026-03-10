@@ -1,7 +1,20 @@
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.content-card {
+  padding: 25px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
 .filhotes-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 80px 20px 40px;
+  padding: 0;
 }
 
 header {

@@ -1,14 +1,12 @@
-
-
 <div class="form-container">
     <form [formGroup]="gatoForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-        <h2>Cadastro de Animais 😺</h2>
-        
+        <h2>{{ editando ? 'Editar Animal' : 'Cadastro de Animais' }} 😺</h2>
+
         <!-- Mensagem de sucesso/erro -->
         <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" style="margin-bottom: 20px; padding: 12px; border-radius: 4px; text-align: center;">
             {{ mensagem }}
         </div>
-        
+
         <!-- Upload da imagem -->
         <mat-label>Imagem do Animal:</mat-label>
         <input type="file" (change)="onFileChange($event)" accept="image/*">
@@ -16,17 +14,17 @@
             <p>Preview da imagem:</p>
             <img [src]="imagemPreview" width="150" height="150" style="object-fit: cover; border: 1px solid #ccc;" />
         </div>
-    
+
         <mat-form-field appearance="outline">
             <mat-label>Nome:</mat-label>
             <input matInput formControlName="nome" type="text">
         </mat-form-field>
-    
+
         <mat-form-field appearance="outline">
             <mat-label>Raça:</mat-label>
             <input matInput formControlName="raca" type="text">
         </mat-form-field>
-    
+
         <mat-form-field appearance="outline">
             <mat-label>Sexo:</mat-label>
             <mat-select formControlName="sexo">
@@ -42,13 +40,63 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
+            <mat-label>Status:</mat-label>
+            <mat-select formControlName="status">
+                <mat-option value="Disponível">Disponível</mat-option>
+                <mat-option value="Vendido">Vendido</mat-option>
+                <mat-option value="Reservado">Reservado</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
             <mat-label>Observações:</mat-label>
             <textarea matInput formControlName="observacoes"></textarea>
         </mat-form-field>
 
-        <!-- Botão de Enviar -->
         <button class="btn-submit" type="submit" [disabled]="carregando">
-            {{ carregando ? 'Cadastrando...' : 'Cadastrar Animal' }}
+            {{ carregando ? (editando ? 'Atualizando...' : 'Cadastrando...') : (editando ? 'Atualizar Animal' : 'Cadastrar Animal') }}
+        </button>
+
+        <button type="button" *ngIf="editando" (click)="cancelarEdicao()" class="btn-cancel" style="margin-left: 10px;">
+            Cancelar Edição
         </button>
     </form>
+</div>
+
+<div class="lista-gatos">
+    <h3>Lista de Animais Cadastrados</h3>
+
+    <div *ngIf="carregando">Carregando...</div>
+    <div *ngIf="!carregando && gatos.length === 0">Nenhum animal cadastrado ainda.</div>
+
+    <table *ngIf="!carregando && gatos.length > 0" class="lista-table" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>Imagem</th>
+                <th>Nome</th>
+                <th>Raça</th>
+                <th>Sexo</th>
+                <th>Coloração</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let gato of gatos" style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px; text-align: center;">
+                    <img *ngIf="gato.imagem" [src]="gato.imagem" alt="{{gato.nome}}" width="60" height="60" style="object-fit: cover; border-radius: 4px;" />
+                    <span *ngIf="!gato.imagem">—</span>
+                </td>
+                <td>{{ gato.nome }}</td>
+                <td>{{ gato.raca }}</td>
+                <td>{{ gato.sexo }}</td>
+                <td>{{ gato.coloracao }}</td>
+                <td>{{ gato.status || 'Disponível' }}</td>
+                <td>
+                    <button type="button" (click)="editarGato(gato)" style="margin-right: 8px;">Editar</button>
+                    <button type="button" (click)="deletarGato(gato.id!)" style="color: #fff; background: #d32f2f; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

@@ -1,13 +1,15 @@
-<div class="filhotes-container">
-  <header>
-    <h1>🐱 Filhotes Disponíveis</h1>
-    <p class="subtitle">Conheça nossos adoráveis gatinhos</p>
-  </header>
+<div class="container">
+  <mat-card class="content-card">
+    <div class="filhotes-container">
+      <header>
+        <h1>🐱 Filhotes Disponíveis</h1>
+        <p class="subtitle">Conheça nossos adoráveis gatinhos</p>
+      </header>
 
-  <!-- Carregando -->
-  <div *ngIf="carregando" class="carregando">
-    <p>Carregando filhotes...</p>
-  </div>
+      <!-- Carregando -->
+      <div *ngIf="carregando" class="carregando">
+        <p>Carregando filhotes...</p>
+      </div>
 
   <!-- Sem gatos -->
   <div *ngIf="!carregando && gatos.length === 0" class="sem-gatos">
@@ -50,10 +52,17 @@
           <span class="valor">{{ gato.coloracao }}</span>
         </div>
 
+        <div class="info-row">
+          <span class="label">Status:</span>
+          <span class="valor">{{ gato.status || 'Disponível' }}</span>
+        </div>
+
         <p *ngIf="gato.observacoes" class="observacoes">
           <strong>Observações:</strong> {{ gato.observacoes }}
         </p>
       </div>
     </div>
-  </div>
+      </div>
+    </div>
+  </mat-card>
 </div>

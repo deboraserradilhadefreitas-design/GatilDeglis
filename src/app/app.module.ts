@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './components/header/header.component';
 import { ContatosComponent } from './pages/contatos/contatos.component';
 import { HomeComponent } from './pages/home/home.component';
 import { UtilsService } from './services/utils.service';
+import { SharedModule } from './shared/shared.module';
 
 
 
@@ -26,7 +26,6 @@ import { ToastrModule } from 'ngx-toastr';
 @NgModule({
   declarations: [                             //paginas
     AppComponent,
-    HeaderComponent,
     ContatosComponent,
     HomeComponent,
   ],
@@ -41,8 +40,8 @@ import { ToastrModule } from 'ngx-toastr';
     CommonModule,
     MatSelectModule,
     MatListModule,
-    MatCardModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    SharedModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
