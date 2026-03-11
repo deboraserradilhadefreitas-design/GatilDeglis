@@ -51,16 +51,16 @@ header {
 
 .gatos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 30px;
-  margin-top: 30px;
+  grid-template-columns: repeat(2, minmax(360px, 1fr));
+  gap: 34px;
+  margin-top: 34px;
 }
 
 .card-gato {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(94, 153, 248, 0.15);
+  box-shadow: 0 6px 16px rgba(94, 153, 248, 0.24);
   transition: all 0.3s ease;
   border: 2px solid #f0f0f0;
 
@@ -73,7 +73,7 @@ header {
 
 .card-imagem {
   width: 100%;
-  height: 250px;
+  height: 340px;
   background: linear-gradient(135deg, #E8F0FE 0%, #F0F8FF 100%);
   overflow: hidden;
   display: flex;

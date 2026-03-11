@@ -18,6 +18,8 @@ export class AdminComponent implements OnInit {
   carregando: boolean = false;
   imagemFile: File | null = null;
 
+  racas: string[] = ['Ragdoll', 'American Curl', 'Maine Coon', 'Siamês', 'Persa', 'Sphynx'];
+
   constructor(private fb: FormBuilder, private gatoService: GatoService) {
     this.gatoForm = this.fb.group({
       nome: ['', Validators.required],
@@ -110,7 +112,9 @@ export class AdminComponent implements OnInit {
           this.carregando = false;
         },
         error: (err) => {
-          this.mensagem = 'Erro ao atualizar o animal: ' + (err.error?.erro || 'Erro desconhecido');
+          const status = err.status || 0;
+          const detalheErro = err.error?.erro || err.error?.message || err.message || 'Erro desconhecido';
+          this.mensagem = `Erro ao atualizar o animal (status ${status}): ${detalheErro}`;
           this.tipoMensagem = 'erro';
           this.carregando = false;
         }
@@ -125,7 +129,9 @@ export class AdminComponent implements OnInit {
           this.carregando = false;
         },
         error: (err) => {
-          this.mensagem = 'Erro ao cadastrar animal: ' + (err.error?.erro || 'Erro desconhecido');
+          const status = err.status || 0;
+          const detalheErro = err.error?.erro || err.error?.message || err.message || 'Erro desconhecido';
+          this.mensagem = `Erro ao cadastrar animal (status ${status}): ${detalheErro}`;
           this.tipoMensagem = 'erro';
           this.carregando = false;
         }

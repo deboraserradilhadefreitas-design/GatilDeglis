@@ -1,8 +1,9 @@
-<div class="form-container">
-    <form [formGroup]="gatoForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-        <h2>{{ editando ? 'Editar Animal' : 'Cadastro de Animais' }} 😺</h2>
+<div class="admin-layout">
+    <div class="form-container">
+        <form [formGroup]="gatoForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+            <h2>{{ editando ? 'Editar Animal' : 'Cadastro de Animais' }} 😺</h2>
 
-        <!-- Mensagem de sucesso/erro -->
+            <!-- Mensagem de sucesso/erro -->
         <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" style="margin-bottom: 20px; padding: 12px; border-radius: 4px; text-align: center;">
             {{ mensagem }}
         </div>
@@ -10,9 +11,10 @@
         <!-- Upload da imagem -->
         <mat-label>Imagem do Animal:</mat-label>
         <input type="file" (change)="onFileChange($event)" accept="image/*">
-        <div *ngIf="imagemPreview">
+
+        <div class="preview-container" *ngIf="imagemPreview">
             <p>Preview da imagem:</p>
-            <img [src]="imagemPreview" width="150" height="150" style="object-fit: cover; border: 1px solid #ccc;" />
+            <img class="preview-img" [src]="imagemPreview" alt="Prévia do animal" />
         </div>
 
         <mat-form-field appearance="outline">
@@ -22,7 +24,11 @@
 
         <mat-form-field appearance="outline">
             <mat-label>Raça:</mat-label>
-            <input matInput formControlName="raca" type="text">
+            <mat-select formControlName="raca" required>
+                <mat-option value="" disabled>Selecione uma raça</mat-option>
+                <mat-option *ngFor="let opcao of racas" [value]="opcao">{{ opcao }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="gatoForm.get('raca')?.hasError('required')">A raça é obrigatória.</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -69,7 +75,8 @@
     <div *ngIf="carregando">Carregando...</div>
     <div *ngIf="!carregando && gatos.length === 0">Nenhum animal cadastrado ainda.</div>
 
-    <table *ngIf="!carregando && gatos.length > 0" class="lista-table" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+    <div class="table-wrap">
+        <table *ngIf="!carregando && gatos.length > 0" class="lista-table" style="margin-top: 20px;">
         <thead>
             <tr>
                 <th>Imagem</th>
@@ -84,7 +91,7 @@
         <tbody>
             <tr *ngFor="let gato of gatos" style="border-bottom: 1px solid #ddd;">
                 <td style="padding: 8px; text-align: center;">
-                    <img *ngIf="gato.imagem" [src]="gato.imagem" alt="{{gato.nome}}" width="60" height="60" style="object-fit: cover; border-radius: 4px;" />
+                    <img *ngIf="gato.imagem" [src]="gato.imagem" alt="{{gato.nome}}" class="lista-img" />
                     <span *ngIf="!gato.imagem">—</span>
                 </td>
                 <td>{{ gato.nome }}</td>
@@ -99,4 +106,6 @@
             </tr>
         </tbody>
     </table>
+    </div>
+</div>
 </div>

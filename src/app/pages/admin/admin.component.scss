@@ -1,6 +1,32 @@
+.admin-layout {
+    display: grid;
+    grid-template-columns: minmax(380px, 1fr) minmax(660px, 2fr);
+    gap: 16px;
+    margin: 20px auto 18px;
+    padding-top: 12px;
+    align-items: start;
+    max-width: 1280px;
+}
+
+@media (max-width: 1300px) {
+    .admin-layout {
+        grid-template-columns: minmax(360px, 1fr) minmax(520px, 2fr);
+    }
+}
+
+
+@media (max-width: 1000px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+        margin: 20px;
+        gap: 12px;
+    }
+}
+
 .form-container {
-    max-width: 500px;
-    margin: 20px auto;
+    max-width: 420px;
+    width: 100%;
+    margin: 0;
     padding: 20px;
     background-color: #fffafc;
     border-radius: 15px;
@@ -17,10 +43,38 @@
 
 input[type="file"] {
     border: none;
-    color:rgb(190, 40, 40);
+    color: rgb(190, 40, 40);
     margin-bottom: 10px;
 }
 
+.preview-container {
+    margin-bottom: 12px;
+}
+
+.preview-container p {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+    color: #50345a;
+}
+
+.preview-img {
+    width: 250px;
+    height: 250px;
+    max-width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: block;
+}
+
+.lista-img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
 .btn-submit {
     background-color: #a66bb3;
     color: white;
@@ -56,3 +110,102 @@ mat-form-field {                     //para deixar um embaixo do outro. Pois, po
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+
+.lista-gatos {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    font-family: 'Arial', sans-serif;
+    width: 100%;
+    min-width: 0;
+    max-height: none;
+    overflow: visible;
+}
+
+.lista-gatos .table-wrap {
+    overflow-x: visible;
+    padding-right: 2px;
+}
+
+.lista-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    min-width: 0;
+    overflow-x: visible;
+}
+
+.lista-table th,
+.lista-table td {
+    border: 1px solid #e0d8e7;
+    padding: 10px;
+    text-align: left;
+    word-break: break-word;
+}
+
+.lista-table th:nth-child(1),
+.lista-table td:nth-child(1) {
+    width: 120px;
+}
+
+.lista-table th:nth-child(2),
+.lista-table td:nth-child(2) {
+    width: 140px;
+}
+
+.lista-table th:nth-child(7),
+.lista-table td:nth-child(7) {
+    width: 130px;
+}
+
+.lista-gatos h3 {
+    margin-top: 0;
+    color: #4a2f63;
+}
+
+.lista-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.lista-table th,
+.lista-table td {
+    border: 1px solid #e0d8e7;
+    padding: 10px;
+    text-align: left;
+}
+
+.lista-table th {
+    background-color: #f4ecf7;
+    color: #4d2864;
+    font-weight: 600;
+}
+
+.lista-table tbody tr:hover {
+    background-color: #f7f2f9;
+}
+
+.lista-table button {
+    background: #5f2f83;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.lista-table button:hover {
+    background: #47225c;
+}
+
+.lista-table button + button {
+    margin-left: 8px;
+    background: #d32f2f;
+}
+
+.lista-table button + button:hover {
+    background: #b71c1c;
+}
+
