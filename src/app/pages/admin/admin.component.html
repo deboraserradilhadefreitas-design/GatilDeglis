@@ -1,7 +1,10 @@
 <div class="admin-layout">
     <div class="form-container">
         <form [formGroup]="gatoForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
-            <h2>{{ editando ? 'Editar Animal' : 'Cadastro de Animais' }} 😺</h2>
+            <header class="admin-section-header">
+                <h2>{{ editando ? 'Editar Animal' : 'Cadastro de Animais' }} 😺</h2>
+                <p class="admin-section-subtitle">Registre novas fichas de felinos instantaneamente ou edite as existentes.</p>
+            </header>
 
             <!-- Mensagem de sucesso/erro -->
         <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" style="margin-bottom: 20px; padding: 12px; border-radius: 4px; text-align: center;">
@@ -70,7 +73,10 @@
 </div>
 
 <div class="lista-gatos">
-    <h3>Lista de Animais Cadastrados</h3>
+    <header class="admin-section-header">
+        <h3>Lista de Animais Cadastrados</h3>
+        <p class="admin-section-subtitle">Gerencie, edite ou exclua diretamente da tabela abaixo.</p>
+    </header>
 
     <div *ngIf="carregando">Carregando...</div>
     <div *ngIf="!carregando && gatos.length === 0">Nenhum animal cadastrado ainda.</div>

@@ -1,18 +1,26 @@
 <header>
-    <nav>
-        <div class="logo-nome">
-            <a routerLink="/"> <img src="assets\imagens\logo.jpg" alt="gatilDeglis" class="logo-gatil" > </a>
-            <h1>GATIL DEGLIS</h1>
-        </div>
+  <div class="header-container">
+    <a class="brand" routerLink="/" (click)="closeMenu()">
+      <img src="assets/imagens/logo.jpg" alt="Gatil Deglis" class="logo-gatil" />
+      <div class="brand-text">
+        <h1>GATIL DEGLIS</h1>
+        <small>Beleza, elegância e amor em forma de gato.</small>
+      </div>
+    </a>
 
-        <ul>
-            <li><a routerLink="/">Início</a></li>
-            <li><a routerLink="/filhotes">Filhotes</a></li>
-            <li>Ninhadas</li>
-            <li>Nossos Gatos</li>
-            <li>Galeria</li>
-            <li><a routerLink="/contatos">Contato</a></li>
-        </ul>
+    <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
 
+    <nav class="nav-links" [class.open]="menuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Início</a>
+      <a routerLink="/filhotes" routerLinkActive="active" (click)="closeMenu()">Filhotes</a>
+      <a href="#" (click)="closeMenu()">Reservas</a>
+      <a href="#" (click)="closeMenu()">Nossos Gatos</a>
+      <a href="#" (click)="closeMenu()">Galeria</a>
+      <a routerLink="/contatos" routerLinkActive="active" (click)="closeMenu()">Contato</a>
     </nav>
+  </div>
 </header>
