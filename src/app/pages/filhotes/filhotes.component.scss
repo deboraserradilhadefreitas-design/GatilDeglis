@@ -1,6 +1,6 @@
 .container {
-  max-width: 1200px;
-  margin: 20px auto;
+  max-width: 1060px;
+  margin: 92px auto 20px;
   padding: 20px;
 }
 
@@ -12,14 +12,15 @@
 }
 
 .filhotes-container {
-  max-width: 1200px;
+  max-width: 1060px;
+  width: 100%;
   margin: 0 auto;
-  padding: 90px 0 0; /* Espaço extra abaixo do header fixo */
+  padding: 64px 0 0; /* Ajustado para deixar o título mais próximo no topo */
 }
 
 header {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 24px;
 
   h1 {
     margin: 0;

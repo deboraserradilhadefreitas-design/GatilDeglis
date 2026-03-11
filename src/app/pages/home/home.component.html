@@ -1,99 +1,105 @@
-<mat-card class="container">
-    <mat-card-title>BEM-VINDO AO GATIL DEGLIS</mat-card-title>
-    
-    <div>
-      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">     <!-- identificador único do carrossel.   o slide faz o carrossel ter animação de deslizamento entre as imagens.   o data-bs-ride="carousel" faz com que ative o bootstrap e ele funcione assim que a pagina carregar -->
+<mat-card class="container home-card">
+  <section class="hero-section">
+    <h1 class="hero-title">BEM-VINDO AO GATIL DEGLIS</h1>
+    <p class="hero-subtitle">Criando felinos extraordinários com elegância e amor, mais que gatos: companheiros para toda a vida.<p>
+  </section>
 
-        <!-- 🔵 Indicadores -->
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
-        </div>
-
-        <!-- 🖼️ Imagens -->
-        <div class="carousel-inner">    <!-- inner = interior, corpo do carrossel carousel-item: é um slide, ou seja, uma “imagem do carrossel”.  active: diz que essa é a imagem inicial, a primeira que aparece quando o carrossel começa. -->
-          <div class="carousel-item active">
-            <img src="assets/imagens/imagem1.jpg" class="d-block w-100" alt="Imagem 1">
-          </div>
-          <div class="carousel-item">
-            <img src="assets/imagens/imagem2.jpg" class="d-block w-100" alt="Imagem 2">
-          </div>
-          <div class="carousel-item">
-            <img src="assets/imagens/imagem3.jpg" class="d-block w-100" alt="Imagem 3">
-          </div>
-          <div class="carousel-item">
-            <img src="assets/imagens/imagem4.jpg" class="d-block w-100" alt="Imagem 4">
-          </div>
-        </div>
-    
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-        </button>
+  <section class="carousel-section">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
       </div>
+
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="assets/imagens/imagem1.jpg" class="d-block w-100" alt="Gatinhos 1">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/imagens/imagem2.jpg" class="d-block w-100" alt="Gatinhos 2">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/imagens/imagem3.jpg" class="d-block w-100" alt="Gatinhos 3">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/imagens/imagem4.jpg" class="d-block w-100" alt="Gatinhos 4">
+        </div>
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+      </button>
     </div>
+  </section>
 
-
-    <mat-card-content>
-        <p>O berço dos gatinhos de olhos azuis dos seus sonhos! Perfeitos para acompanhar sua vida </p>
+  <mat-card-content>
+    <section class="about-section">
+      <h2>Sobre nós</h2>
+      <div class="about-text">
+        <p>O berço dos gatinhos de olhos azuis dos seus sonhos! Perfeitos para acompanhar sua vida</p>
 
         <p>Somos registrados no Clube do Gato do Paraná autorizado pela TICA - The Cat International Cat Association, localizados na cidade de São Paulo.</p>
 
         <p>Somos uma família de amantes de gatos e a raça Ragdoll particularmente nos encantou pela beleza, porte e temperamento dócil.</p>
 
-        <p>Nossa criação é o resultado de vários processos de estudo pesquisa e planejamento, zelando pelo bem estar animal; 
-            Diante disso escolhemos dar uma alta qualidade nutricional oferecendo sempre rações super premium que proporcionam alta digestibilidade e densidade energética, 
-            além de reduzir o risco do aparecimento de doenças nutricionais 
+        <p>Nossa criação é o resultado de vários processos de estudo pesquisa e planejamento, zelando pelo bem estar animal;
+            Diante disso escolhemos dar uma alta qualidade nutricional oferecendo sempre rações super premium que proporcionam alta digestibilidade e densidade energética,
+            além de reduzir o risco do aparecimento de doenças nutricionais
         </p>
 
-        <p>São criados livres de gaiolas morando em nossa casa, interagindo com toda família, amados, acariciados, bem cuidados e socializados. 
+        <p>São criados livres de gaiolas morando em nossa casa, interagindo com toda família, amados, acariciados, bem cuidados e socializados.
             Nossas técnicas de manejo propiciam que nossos gatos tenham uma excelente saúde física e mental e um comportamento dócil retribuindo todo carinho que são dispensados a eles.
         </p>
 
-        <p>Nossa gestão visa preservar a raça em suas características físicas e comportamental selecionando reprodutores cuidadosamente, 
-            negativos para: 
-            
-            <mat-list>
-                <mat-list-item>🩺 <strong>FIV/FELV</strong> (Vírus da Imunodeficiência Felina e Leucemia Felina)</mat-list-item>
-                <mat-list-item>🩺 <strong>PKD</strong> (Doença do Rim Policístico)</mat-list-item>
-                <mat-list-item>🩺 <strong>HCM</strong> (Cardiomiopatia Hipertrófica)</mat-list-item>
-            </mat-list>
+        <p>Nossa gestão visa preservar a raça em suas características físicas e comportamental selecionando reprodutores cuidadosamente,
+            negativos para:
         </p>
 
-        <div class="imagem-central">
-          <img src="assets\imagens\tonystark1.jpg" alt="TonyStark">
+        <mat-list>
+            <mat-list-item>🩺 <strong>FIV/FELV</strong> (Vírus da Imunodeficiência Felina e Leucemia Felina)</mat-list-item>
+            <mat-list-item>🩺 <strong>PKD</strong> (Doença do Rim Policístico)</mat-list-item>
+            <mat-list-item>🩺 <strong>HCM</strong> (Cardiomiopatia Hipertrófica)</mat-list-item>
+        </mat-list>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <h3>Foco em Saúde</h3>
+          <p>Reprodutores testados e negativos para FIV/FELV, PKD e HCM. Alimentação premium e acompanhamento veterinário.</p>
         </div>
+        <div class="about-card">
+          <h3>Ambiente Familiar</h3>
+          <p>Gatinhos vivem em casa, livres de gaiolas, socializados diariamente e prontos para entrarem no novo lar com confiança.</p>
+        </div>
+      </div>
 
-
-        <h3>OS GATINHOS VÃO PARA CASA COM:</h3>
+      <div class="highlights-card">
+        <h3>O que entregamos com amor</h3>
         <mat-list>
           <mat-list-item>🐾 Vacinações apropriadas à idade (2-3x V4)</mat-list-item>
-
           <mat-list-item>🐾 Desparasitação adequada à idade (3-4x)</mat-list-item>
-
           <mat-list-item>🐾 Castrado/castrada sem exceções</mat-list-item>
-
           <mat-list-item>🐾 Atestado de saúde</mat-list-item>
-
           <mat-list-item>🐾 Carteira de vacinação</mat-list-item>
-
           <mat-list-item>🐾 Pedigree</mat-list-item>
-
           <mat-list-item>🐾 Microchipado</mat-list-item>
-
           <mat-list-item>🐾 Antes de irem para o novo lar tomam banho e as unhas são aparadas</mat-list-item>
-
           <mat-list-item>🐾 Contrato de compra e venda</mat-list-item>
-
           <mat-list-item>🐾 Um brinde com 100 gramas da ração seca e um pacotinho de ração úmida.</mat-list-item>
         </mat-list>
+      </div>
+    </section>
 
-        <div class="imagem-final">
-          <img src="assets\imagens\filhotesemamae.jpg" alt="FilhotesEMamae">
-        </div>
-    </mat-card-content>
+    <section class="final-images">
+      <img src="assets/imagens/tonystark1.jpg" alt="TonyStark" />
+      <img src="assets/imagens/filhotesemamae.jpg" alt="FilhotesEMamae" />
+    </section>
+  </mat-card-content>
 </mat-card>
