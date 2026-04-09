@@ -62,6 +62,11 @@
             <textarea matInput formControlName="observacoes"></textarea>
         </mat-form-field>
 
+        <mat-form-field appearance="outline">
+            <mat-label>Data de Nascimento:</mat-label>
+            <input matInput type="date" formControlName="data_nascimento">
+        </mat-form-field>
+
         <button class="btn-submit" type="submit" [disabled]="carregando">
             {{ carregando ? (editando ? 'Atualizando...' : 'Cadastrando...') : (editando ? 'Atualizar Animal' : 'Cadastrar Animal') }}
         </button>
@@ -90,6 +95,7 @@
                 <th>Raça</th>
                 <th>Sexo</th>
                 <th>Coloração</th>
+                <th>Idade</th>
                 <th>Status</th>
                 <th>Ações</th>
             </tr>
@@ -104,11 +110,88 @@
                 <td>{{ gato.raca }}</td>
                 <td>{{ gato.sexo }}</td>
                 <td>{{ gato.coloracao }}</td>
+                <td>{{ calcularIdade(gato.data_nascimento) }}</td>
                 <td>{{ gato.status || 'Disponível' }}</td>
                 <td>
                     <button type="button" (click)="editarGato(gato)" style="margin-right: 8px;">Editar</button>
                     <button type="button" (click)="deletarGato(gato.id!)" style="color: #fff; background: #d32f2f; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>
                 </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<div class="form-container">
+    <form [formGroup]="ninhadaForm" (ngSubmit)="onSubmitNinhada()" enctype="multipart/form-data">
+        <header class="admin-section-header">
+            <h2>Cadastro de Ninhadas 🍼</h2>
+            <p class="admin-section-subtitle">Registre novas ninhadas com informações dos pais e filhotes.</p>
+        </header>
+
+        <!-- Mensagem de sucesso/erro -->
+        <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" style="margin-bottom: 20px; padding: 12px; border-radius: 4px; text-align: center;">
+            {{ mensagem }}
+        </div>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Nome da Ninhada:</mat-label>
+            <input matInput formControlName="nome" type="text">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Pai:</mat-label>
+            <mat-select formControlName="pai_id" required>
+                <mat-option value="" disabled>Selecione o pai</mat-option>
+                <mat-option *ngFor="let gato of machos" [value]="gato.id">{{ gato.nome }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="ninhadaForm.get('pai_id')?.hasError('required')">O pai é obrigatório.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Mãe:</mat-label>
+            <mat-select formControlName="mae_id" required>
+                <mat-option value="" disabled>Selecione a mãe</mat-option>
+                <mat-option *ngFor="let gato of femeas" [value]="gato.id">{{ gato.nome }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="ninhadaForm.get('mae_id')?.hasError('required')">A mãe é obrigatória.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Quantidade de Filhotes:</mat-label>
+            <input matInput formControlName="quantidade_filhotes" type="number" min="1">
+        </mat-form-field>
+
+        <button class="btn-submit" type="submit" [disabled]="carregando">
+            {{ carregando ? 'Cadastrando...' : 'Cadastrar Ninhada' }}
+        </button>
+    </form>
+</div>
+
+<div class="lista-gatos">
+    <header class="admin-section-header">
+        <h3>Lista de Ninhadas Cadastradas</h3>
+        <p class="admin-section-subtitle">Gerencie as ninhadas registradas.</p>
+    </header>
+
+    <div *ngIf="ninhadas.length === 0">Nenhuma ninhada cadastrada ainda.</div>
+
+    <div class="table-wrap">
+        <table *ngIf="ninhadas.length > 0" class="lista-table" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Pai</th>
+                <th>Mãe</th>
+                <th>Quantidade de Filhotes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let ninhada of ninhadas" style="border-bottom: 1px solid #ddd;">
+                <td>{{ ninhada.nome }}</td>
+                <td>{{ getGatoNome(ninhada.pai_id) }}</td>
+                <td>{{ getGatoNome(ninhada.mae_id) }}</td>
+                <td>{{ ninhada.quantidade_filhotes }}</td>
             </tr>
         </tbody>
     </table>

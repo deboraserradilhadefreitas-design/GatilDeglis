@@ -1,0 +1,30 @@
+<mat-card class="container gatos-card">
+  <section class="hero-section">
+    <h1 class="hero-title">NOSSOS GATOS</h1>
+    <p class="hero-subtitle">Conheça nossas matrizes e padreadores que dão origem aos filhotes incríveis.</p>
+  </section>
+
+  <mat-card-content>
+    <section class="gatos-section">
+      <h2>Matrizes (Fêmeas)</h2>
+      <div class="gatos-list">
+        <div *ngFor="let gato of matrizes" class="gato-card">
+          <img [src]="gato.imagem || 'assets/imagens/default-cat.jpg'" alt="{{gato.nome}}" class="gato-img">
+          <h3>{{gato.nome}}</h3>
+          <p>Idade: {{calcularIdade(gato.data_nascimento)}}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="gatos-section">
+      <h2>Padreadores (Machos)</h2>
+      <div class="gatos-list">
+        <div *ngFor="let gato of padreadores" class="gato-card">
+          <img [src]="gato.imagem || 'assets/imagens/default-cat.jpg'" alt="{{gato.nome}}" class="gato-img">
+          <h3>{{gato.nome}}</h3>
+          <p>Idade: {{calcularIdade(gato.data_nascimento)}}</p>
+        </div>
+      </div>
+    </section>
+  </mat-card-content>
+</mat-card>

@@ -3,23 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export interface Gato {
+export interface Ninhada {
   id?: number;
   nome: string;
-  raca: string;
-  sexo: 'Macho' | 'Fêmea';
-  coloracao: string;
-  observacoes?: string;
-  status?: 'Disponível' | 'Vendido' | 'Reservado';
   imagem?: string;
-  data_nascimento?: string;
+  pai_id: number;
+  mae_id: number;
+  quantidade_filhotes: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class GatoService {
-  private apiUrl = `${environment.apiUrl}/gatos`;
+export class NinhadaService {
+  private apiUrl = `${environment.apiUrl}/ninhadas`;
 
   constructor(private http: HttpClient) { }
 
