@@ -11,7 +11,7 @@
         <div *ngFor="let gato of matrizes" class="gato-card">
           <img [src]="gato.imagem || 'assets/imagens/default-cat.jpg'" alt="{{gato.nome}}" class="gato-img">
           <h3>{{gato.nome}}</h3>
-          <p>Idade: {{calcularIdade(gato.data_nascimento)}}</p>
+          <p>Idade: {{gato.idade ? gato.idade + ' anos' : 'Desconhecida'}}</p>
         </div>
       </div>
     </section>
@@ -22,9 +22,18 @@
         <div *ngFor="let gato of padreadores" class="gato-card">
           <img [src]="gato.imagem || 'assets/imagens/default-cat.jpg'" alt="{{gato.nome}}" class="gato-img">
           <h3>{{gato.nome}}</h3>
-          <p>Idade: {{calcularIdade(gato.data_nascimento)}}</p>
+          <p>Idade: {{gato.idade ? gato.idade + ' anos' : 'Desconhecida'}}</p>
+        </div>
+      </div>
+    <section class="gatos-section">
+      <h2>Ninhadas</h2>
+      <div class="ninhadas-list">
+        <div *ngFor="let ninhada of ninhadas" class="ninhada-card">
+          <img [src]="ninhada.imagem || 'assets/imagens/default-litter.jpg'" alt="{{ninhada.nome}}" class="ninhada-img">
+          <h3>{{ninhada.nome}}</h3>
+          <p>Pai: {{getGatoNome(ninhada.pai_id)}}</p>
+          <p>Mãe: {{getGatoNome(ninhada.mae_id)}}</p>
+          <p>Quantidade de Filhotes: {{ninhada.quantidade_filhotes}}</p>
         </div>
       </div>
     </section>
-  </mat-card-content>
-</mat-card>

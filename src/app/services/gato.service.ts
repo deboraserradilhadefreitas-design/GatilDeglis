@@ -12,7 +12,8 @@ export interface Gato {
   observacoes?: string;
   status?: 'Disponível' | 'Vendido' | 'Reservado';
   imagem?: string;
-  data_nascimento?: string;
+  idade?: number;
+  tipo: 'filhote' | 'gato';
 }
 
 @Injectable({

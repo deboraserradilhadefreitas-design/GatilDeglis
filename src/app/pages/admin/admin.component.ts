@@ -32,8 +32,9 @@ export class AdminComponent implements OnInit {
       sexo: ['', Validators.required],
       coloracao: ['', Validators.required],
       observacoes: [''],
-      status: ['Disponível', Validators.required],
-      data_nascimento: ['']
+      status: [''],
+      idade: ['', [Validators.min(0), Validators.max(30)]],
+      tipo: ['gato', Validators.required]
     });
     this.ninhadaForm = this.fb.group({
       nome: ['', Validators.required],
@@ -63,26 +64,46 @@ export class AdminComponent implements OnInit {
 
   private construirFormData(): FormData {
     const formData = new FormData();
+    const tipo = this.gatoForm.get('tipo')?.value;
+    const idade = this.gatoForm.get('idade')?.value;
+    const status = this.gatoForm.get('status')?.value;
+    
+    console.log('=== CONSTRUINDO FORMDATA ===');
+    console.log('Tipo (raw):', tipo, 'Type:', typeof tipo);
+    console.log('Idade (raw):', idade, 'Type:', typeof idade);
+    console.log('Status (raw):', status, 'Type:', typeof status);
+    
     formData.append('nome', this.gatoForm.get('nome')?.value);
     formData.append('raca', this.gatoForm.get('raca')?.value);
     formData.append('sexo', this.gatoForm.get('sexo')?.value);
     formData.append('coloracao', this.gatoForm.get('coloracao')?.value);
     formData.append('observacoes', this.gatoForm.get('observacoes')?.value || '');
-    formData.append('status', this.gatoForm.get('status')?.value);
-    const dataNasc = this.gatoForm.get('data_nascimento')?.value;
-    if (dataNasc) {
-      formData.append('data_nascimento', dataNasc);
+    
+    // Status é opcional
+    if (status !== null && status !== undefined && status !== '') {
+      formData.append('status', status);
+    }
+    
+    // Tipo é obrigatório - sempre enviar
+    const tipoEnvio = tipo && tipo.length > 0 ? tipo : 'gato';
+    formData.append('tipo', tipoEnvio);
+    console.log('Tipo sendo enviado:', tipoEnvio);
+    
+    // Idade é opcional
+    if (idade !== null && idade !== undefined && idade !== '') {
+      formData.append('idade', idade.toString());
     }
 
     if (this.imagemFile) {
       formData.append('imagem', this.imagemFile);
     }
 
+
     return formData;
   }
 
   private resetForm(): void {
-    this.gatoForm.reset({ status: 'Disponível' });
+    this.gatoForm.reset({ status: '', tipo: 'gato' });
     this.imagemPreview = null;
     this.imagemFile = null;
     this.editando = false;
@@ -94,8 +115,8 @@ export class AdminComponent implements OnInit {
     this.gatoService.listar().subscribe({
       next: (resposta) => {
         this.gatos = resposta.dados || [];
-        this.machos = this.gatos.filter(g => g.sexo === 'Macho');
-        this.femeas = this.gatos.filter(g => g.sexo === 'Fêmea');
+        this.machos = this.gatos.filter((g: Gato) => g.sexo === 'Macho');
+        this.femeas = this.gatos.filter((g: Gato) => g.sexo === 'Fêmea');
         this.carregando = false;
       },
       error: (err) => {
@@ -167,8 +188,9 @@ export class AdminComponent implements OnInit {
       sexo: gato.sexo,
       coloracao: gato.coloracao,
       observacoes: gato.observacoes || '',
-      status: gato.status || 'Disponível',
-      data_nascimento: gato.data_nascimento ? new Date(gato.data_nascimento).toISOString().split('T')[0] : ''
+      status: gato.status || '',
+      idade: gato.idade || '',
+      tipo: gato.tipo || 'gato'
     });
 
     this.imagemPreview = gato.imagem || null;
@@ -207,13 +229,8 @@ export class AdminComponent implements OnInit {
     return gato ? gato.nome : 'Desconhecido';
   }
 
-  calcularIdade(dataNascimento: string | undefined): string {
-    if (!dataNascimento) return 'Desconhecida';
-    const nascimento = new Date(dataNascimento);
-    const hoje = new Date();
-    const diff = hoje.getTime() - nascimento.getTime();
-    const anos = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-    return anos + ' anos';
+  calcularIdade(idade: number | undefined): string {
+    return idade ? idade + ' anos' : '—';
   }
 
   listarNinhadas(): void {

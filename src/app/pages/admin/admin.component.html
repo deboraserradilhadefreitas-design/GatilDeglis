@@ -49,8 +49,9 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-            <mat-label>Status:</mat-label>
+            <mat-label>Status (Opcional):</mat-label>
             <mat-select formControlName="status">
+                <mat-option value="">Não informado</mat-option>
                 <mat-option value="Disponível">Disponível</mat-option>
                 <mat-option value="Vendido">Vendido</mat-option>
                 <mat-option value="Reservado">Reservado</mat-option>
@@ -63,8 +64,17 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-            <mat-label>Data de Nascimento:</mat-label>
-            <input matInput type="date" formControlName="data_nascimento">
+            <mat-label>Idade (em anos):</mat-label>
+            <input matInput type="number" min="0" max="30" formControlName="idade">
+            <mat-hint>Idade aproximada do animal em anos</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Tipo:</mat-label>
+            <mat-select formControlName="tipo">
+                <mat-option value="gato">Gato Adulto</mat-option>
+                <mat-option value="filhote">Filhote</mat-option>
+            </mat-select>
         </mat-form-field>
 
         <button class="btn-submit" type="submit" [disabled]="carregando">
@@ -95,6 +105,7 @@
                 <th>Raça</th>
                 <th>Sexo</th>
                 <th>Coloração</th>
+                <th>Tipo</th>
                 <th>Idade</th>
                 <th>Status</th>
                 <th>Ações</th>
@@ -110,8 +121,9 @@
                 <td>{{ gato.raca }}</td>
                 <td>{{ gato.sexo }}</td>
                 <td>{{ gato.coloracao }}</td>
-                <td>{{ calcularIdade(gato.data_nascimento) }}</td>
-                <td>{{ gato.status || 'Disponível' }}</td>
+                <td>{{ gato.tipo === 'gato' ? 'Gato Adulto' : 'Filhote' }}</td>
+                <td>{{ gato.idade ? gato.idade + ' anos' : '—' }}</td>
+                <td>{{ gato.status || '—' }}</td>
                 <td>
                     <button type="button" (click)="editarGato(gato)" style="margin-right: 8px;">Editar</button>
                     <button type="button" (click)="deletarGato(gato.id!)" style="color: #fff; background: #d32f2f; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>

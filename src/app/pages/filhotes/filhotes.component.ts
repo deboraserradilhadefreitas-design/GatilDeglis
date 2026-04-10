@@ -20,7 +20,9 @@ export class FilhotesComponent implements OnInit {
     this.carregando = true;
     this.gatoService.listar().subscribe({
       next: (resposta) => {
-        this.gatos = resposta.dados || [];
+        this.gatos = (resposta.dados || []).filter((g: any) => {
+          return g.tipo === 'filhote';
+        });
         this.carregando = false;
       },
       error: (erro) => {

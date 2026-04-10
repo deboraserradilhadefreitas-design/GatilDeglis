@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { GatoService, Gato } from '../../services/gato.service';
+import { NinhadaService, Ninhada } from '../../services/ninhada.service';
 
 @Component({
   selector: 'app-gatos',
@@ -13,29 +14,39 @@ import { GatoService, Gato } from '../../services/gato.service';
 export class GatosComponent implements OnInit {
   matrizes: Gato[] = [];
   padreadores: Gato[] = [];
+  ninhadas: Ninhada[] = [];
 
-  constructor(private gatoService: GatoService) {}
+  constructor(private gatoService: GatoService, private ninhadaService: NinhadaService) {}
 
   ngOnInit(): void {
     this.carregarGatos();
+    this.carregarNinhadas();
   }
 
   carregarGatos(): void {
     this.gatoService.listar().subscribe({
-      next: (gatos: Gato[]) => {
-        this.matrizes = gatos.filter(g => g.sexo === 'Fêmea');
-        this.padreadores = gatos.filter(g => g.sexo === 'Macho');
+      next: (resposta) => {
+        const gatos = resposta.dados || [];
+        const gatosAdultos = gatos.filter((g: Gato) => g.tipo === 'gato');
+        this.matrizes = gatosAdultos.filter((g: Gato) => g.sexo === 'Fêmea');
+        this.padreadores = gatosAdultos.filter((g: Gato) => g.sexo === 'Macho');
       },
       error: (err) => console.error('Erro ao carregar gatos:', err)
     });
   }
 
-  calcularIdade(dataNascimento: string | undefined): string {
-    if (!dataNascimento) return 'Desconhecida';
-    const nascimento = new Date(dataNascimento);
-    const hoje = new Date();
-    const diff = hoje.getTime() - nascimento.getTime();
-    const anos = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-    return anos + ' anos';
+  carregarNinhadas(): void {
+    this.ninhadaService.listar().subscribe({
+      next: (ninhadas: Ninhada[]) => {
+        this.ninhadas = ninhadas;
+      },
+      error: (err) => console.error('Erro ao carregar ninhadas:', err)
+    });
+  }
+
+  getGatoNome(id: number): string {
+    const todosGatos = [...this.matrizes, ...this.padreadores];
+    const gato = todosGatos.find(g => g.id === id);
+    return gato ? gato.nome : 'Desconhecido';
   }
 }
