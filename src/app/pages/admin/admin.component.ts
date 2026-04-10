@@ -17,11 +17,15 @@ export class AdminComponent implements OnInit {
   femeas: Gato[] = [];
   editando: boolean = false;
   gatoEditandoId: number | null = null;
+  editandoNinhada: boolean = false;
+  ninhadaEditandoId: number | null = null;
   imagemPreview: string | ArrayBuffer | null = null;
+  imagemNinhadaPreview: string | ArrayBuffer | null = null;
   mensagem: string = '';
   tipoMensagem: 'sucesso' | 'erro' = 'sucesso';
   carregando: boolean = false;
   imagemFile: File | null = null;
+  imagemNinhadaFile: File | null = null;
 
   racas: string[] = ['Ragdoll', 'American Curl', 'Maine Coon', 'Siamês', 'Persa', 'Sphynx'];
 
@@ -57,6 +61,19 @@ export class AdminComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => {
         this.imagemPreview = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  onFileChangeNinhada(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.imagemNinhadaFile = file;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagemNinhadaPreview = reader.result;
       };
       reader.readAsDataURL(file);
     }
@@ -108,6 +125,14 @@ export class AdminComponent implements OnInit {
     this.imagemFile = null;
     this.editando = false;
     this.gatoEditandoId = null;
+  }
+
+  private resetFormNinhada(): void {
+    this.ninhadaForm.reset();
+    this.imagemNinhadaPreview = null;
+    this.imagemNinhadaFile = null;
+    this.editandoNinhada = false;
+    this.ninhadaEditandoId = null;
   }
 
   listarGatos(): void {
@@ -244,6 +269,47 @@ export class AdminComponent implements OnInit {
     });
   }
 
+  editarNinhada(ninhada: Ninhada): void {
+    this.editandoNinhada = true;
+    this.ninhadaEditandoId = ninhada.id ?? null;
+    this.ninhadaForm.patchValue({
+      nome: ninhada.nome,
+      pai_id: ninhada.pai_id,
+      mae_id: ninhada.mae_id,
+      quantidade_filhotes: ninhada.quantidade_filhotes
+    });
+
+    this.imagemNinhadaPreview = ninhada.imagem || null;
+    this.mensagem = 'Modo edição ativado. Altere os dados e salve.';
+    this.tipoMensagem = 'sucesso';
+  }
+
+  cancelarEdicaoNinhada(): void {
+    this.resetFormNinhada();
+    this.mensagem = '';
+  }
+
+  deletarNinhada(id: number): void {
+    if (!confirm('Tem certeza que deseja excluir esta ninhada?')) {
+      return;
+    }
+
+    this.carregando = true;
+    this.ninhadaService.deletar(id).subscribe({
+      next: () => {
+        this.mensagem = '🗑️ Ninhada excluída com sucesso!';
+        this.tipoMensagem = 'sucesso';
+        this.listarNinhadas();
+        this.carregando = false;
+      },
+      error: (err) => {
+        this.mensagem = 'Erro ao excluir ninhada: ' + (err.error?.erro || 'Erro desconhecido');
+        this.tipoMensagem = 'erro';
+        this.carregando = false;
+      }
+    });
+  }
+
   onSubmitNinhada() {
     if (!this.ninhadaForm.valid) {
       this.mensagem = 'Por favor, preencha todos os campos obrigatórios!';
@@ -252,24 +318,52 @@ export class AdminComponent implements OnInit {
     }
 
     this.carregando = true;
-    const formData = this.ninhadaForm.value;
+    const formData = new FormData();
+    
+    formData.append('nome', this.ninhadaForm.get('nome')?.value);
+    formData.append('pai_id', this.ninhadaForm.get('pai_id')?.value);
+    formData.append('mae_id', this.ninhadaForm.get('mae_id')?.value);
+    formData.append('quantidade_filhotes', this.ninhadaForm.get('quantidade_filhotes')?.value);
 
-    this.ninhadaService.criar(formData).subscribe({
-      next: (response) => {
-        this.mensagem = '🐾 Ninhada cadastrada com sucesso!';
-        this.tipoMensagem = 'sucesso';
-        this.ninhadaForm.reset();
-        this.listarNinhadas();
-        this.carregando = false;
-      },
-      error: (err) => {
-        const status = err.status || 0;
-        const detalheErro = err.error?.erro || err.error?.message || err.message || 'Erro desconhecido';
-        this.mensagem = `Erro ao cadastrar ninhada (status ${status}): ${detalheErro}`;
-        this.tipoMensagem = 'erro';
-        this.carregando = false;
-      }
-    });
+    if (this.imagemNinhadaFile) {
+      formData.append('imagem', this.imagemNinhadaFile);
+    }
+
+    if (this.editandoNinhada && this.ninhadaEditandoId !== null) {
+      this.ninhadaService.atualizar(this.ninhadaEditandoId, formData).subscribe({
+        next: (response) => {
+          this.mensagem = '🐾 Ninhada atualizada com sucesso!';
+          this.tipoMensagem = 'sucesso';
+          this.resetFormNinhada();
+          this.listarNinhadas();
+          this.carregando = false;
+        },
+        error: (err) => {
+          const status = err.status || 0;
+          const detalheErro = err.error?.erro || err.error?.message || err.message || 'Erro desconhecido';
+          this.mensagem = `Erro ao atualizar ninhada (status ${status}): ${detalheErro}`;
+          this.tipoMensagem = 'erro';
+          this.carregando = false;
+        }
+      });
+    } else {
+      this.ninhadaService.criar(formData).subscribe({
+        next: (response) => {
+          this.mensagem = '🐾 Ninhada cadastrada com sucesso!';
+          this.tipoMensagem = 'sucesso';
+          this.resetFormNinhada();
+          this.listarNinhadas();
+          this.carregando = false;
+        },
+        error: (err) => {
+          const status = err.status || 0;
+          const detalheErro = err.error?.erro || err.error?.message || err.message || 'Erro desconhecido';
+          this.mensagem = `Erro ao cadastrar ninhada (status ${status}): ${detalheErro}`;
+          this.tipoMensagem = 'erro';
+          this.carregando = false;
+        }
+      });
+    }
   }
 }
 

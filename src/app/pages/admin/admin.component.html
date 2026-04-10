@@ -137,13 +137,22 @@
 <div class="form-container">
     <form [formGroup]="ninhadaForm" (ngSubmit)="onSubmitNinhada()" enctype="multipart/form-data">
         <header class="admin-section-header">
-            <h2>Cadastro de Ninhadas 🍼</h2>
-            <p class="admin-section-subtitle">Registre novas ninhadas com informações dos pais e filhotes.</p>
+            <h2>{{ editandoNinhada ? 'Editar Ninhada' : 'Cadastro de Ninhadas' }} 🍼</h2>
+            <p class="admin-section-subtitle">{{ editandoNinhada ? 'Altere as informações da ninhada.' : 'Registre novas ninhadas com informações dos pais e filhotes.' }}</p>
         </header>
 
         <!-- Mensagem de sucesso/erro -->
         <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" style="margin-bottom: 20px; padding: 12px; border-radius: 4px; text-align: center;">
             {{ mensagem }}
+        </div>
+
+        <!-- Upload da imagem -->
+        <mat-label>Imagem da Ninhada:</mat-label>
+        <input type="file" (change)="onFileChangeNinhada($event)" accept="image/*">
+
+        <div class="preview-container" *ngIf="imagemNinhadaPreview">
+            <p>Preview da imagem:</p>
+            <img class="preview-img" [src]="imagemNinhadaPreview" alt="Prévia da ninhada" />
         </div>
 
         <mat-form-field appearance="outline">
@@ -175,7 +184,11 @@
         </mat-form-field>
 
         <button class="btn-submit" type="submit" [disabled]="carregando">
-            {{ carregando ? 'Cadastrando...' : 'Cadastrar Ninhada' }}
+            {{ carregando ? (editandoNinhada ? 'Atualizando...' : 'Cadastrando...') : (editandoNinhada ? 'Atualizar Ninhada' : 'Cadastrar Ninhada') }}
+        </button>
+
+        <button type="button" *ngIf="editandoNinhada" (click)="cancelarEdicaoNinhada()" class="btn-cancel" style="margin-left: 10px;">
+            Cancelar Edição
         </button>
     </form>
 </div>
@@ -192,18 +205,28 @@
         <table *ngIf="ninhadas.length > 0" class="lista-table" style="margin-top: 20px;">
         <thead>
             <tr>
+                <th>Imagem</th>
                 <th>Nome</th>
                 <th>Pai</th>
                 <th>Mãe</th>
                 <th>Quantidade de Filhotes</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let ninhada of ninhadas" style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 8px; text-align: center;">
+                    <img *ngIf="ninhada.imagem" [src]="ninhada.imagem" alt="{{ninhada.nome}}" class="lista-img" />
+                    <span *ngIf="!ninhada.imagem">—</span>
+                </td>
                 <td>{{ ninhada.nome }}</td>
                 <td>{{ getGatoNome(ninhada.pai_id) }}</td>
                 <td>{{ getGatoNome(ninhada.mae_id) }}</td>
                 <td>{{ ninhada.quantidade_filhotes }}</td>
+                <td>
+                    <button type="button" (click)="editarNinhada(ninhada)" style="margin-right: 8px;">Editar</button>
+                    <button type="button" (click)="deletarNinhada(ninhada.id!)" style="color: #fff; background: #d32f2f; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>
+                </td>
             </tr>
         </tbody>
     </table>
