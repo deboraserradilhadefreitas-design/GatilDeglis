@@ -1,39 +1,123 @@
 <mat-card class="container gatos-card">
+  <!-- Hero Section -->
   <section class="hero-section">
     <h1 class="hero-title">NOSSOS GATOS</h1>
     <p class="hero-subtitle">Conheça nossas matrizes e padreadores que dão origem aos filhotes incríveis.</p>
   </section>
 
-  <mat-card-content>
+  <mat-card-content class="card-content">
+    <!-- Seção de Matrizes -->
     <section class="gatos-section">
-      <h2>Matrizes (Fêmeas)</h2>
-      <div class="gatos-list">
+      <div class="section-header">
+        <h2>🐱 Matrizes (Fêmeas)</h2>
+        <p class="section-description">Nossas mães felinas dedicadas</p>
+      </div>
+      <div class="gatos-list gatos-list-limited">
         <div *ngFor="let gato of matrizes" class="gato-card">
-          <img [src]="gato.imagem || 'assets/imagens/default-cat.jpg'" alt="{{gato.nome}}" class="gato-img">
-          <h3>{{gato.nome}}</h3>
-          <p>Idade: {{gato.idade ? gato.idade + ' anos' : 'Desconhecida'}}</p>
+          <div class="gato-card-image-wrapper">
+            <img [src]="gato.imagem || 'assets/imagens/default-cat.jpg'" alt="{{gato.nome}}" class="gato-img">
+          </div>
+          <div class="gato-card-content">
+            <h3>{{gato.nome}}</h3>
+            <p class="gato-info"><strong>Idade:</strong> {{gato.idade ? gato.idade + ' anos' : 'Desconhecida'}}</p>
+            <p class="gato-info"><strong>Raça:</strong> {{gato.raca || 'Desconhecida'}}</p>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- Seção de Padreadores -->
     <section class="gatos-section">
-      <h2>Padreadores (Machos)</h2>
-      <div class="gatos-list">
-        <div *ngFor="let gato of padreadores" class="gato-card">
-          <img [src]="gato.imagem || 'assets/imagens/default-cat.jpg'" alt="{{gato.nome}}" class="gato-img">
-          <h3>{{gato.nome}}</h3>
-          <p>Idade: {{gato.idade ? gato.idade + ' anos' : 'Desconhecida'}}</p>
-        </div>
+      <div class="section-header">
+        <h2>🐱 Padreadores (Machos)</h2>
+        <p class="section-description">Nossos pais felinos nobres</p>
       </div>
-    <section class="gatos-section">
-      <h2>Ninhadas</h2>
-      <div class="ninhadas-list">
-        <div *ngFor="let ninhada of ninhadas" class="ninhada-card">
-          <img [src]="ninhada.imagem || 'assets/imagens/default-litter.jpg'" alt="{{ninhada.nome}}" class="ninhada-img">
-          <h3>{{ninhada.nome}}</h3>
-          <p>Pai: {{getGatoNome(ninhada.pai_id)}}</p>
-          <p>Mãe: {{getGatoNome(ninhada.mae_id)}}</p>
-          <p>Quantidade de Filhotes: {{ninhada.quantidade_filhotes}}</p>
+      <div class="gatos-list gatos-list-limited">
+        <div *ngFor="let gato of padreadores" class="gato-card">
+          <div class="gato-card-image-wrapper">
+            <img [src]="gato.imagem || 'assets/imagens/default-cat.jpg'" alt="{{gato.nome}}" class="gato-img">
+          </div>
+          <div class="gato-card-content">
+            <h3>{{gato.nome}}</h3>
+            <p class="gato-info"><strong>Idade:</strong> {{gato.idade ? gato.idade + ' anos' : 'Desconhecida'}}</p>
+            <p class="gato-info"><strong>Raça:</strong> {{gato.raca || 'Desconhecida'}}</p>
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- Seção de Ninhadas -->
+    <section class="gatos-section ninhada-section">
+      <div class="section-header">
+        <h2>👶 Nossas Ninhadas</h2>
+        <p class="section-description">Genética e amor em cada filhote</p>
+      </div>
+      
+      <div class="ninhadas-container">
+        <div *ngFor="let ninhada of ninhadas" class="ninhada-family-card">
+          <!-- Layout Mãe + Pai = Filhotes -->
+          <div class="ninhada-genetics">
+            <!-- Mãe -->
+            <div class="parent-container mae">
+              <div class="parent-image">
+                <img 
+                  [src]="getGatoImagem(ninhada.mae_id) || 'assets/imagens/default-cat.jpg'" 
+                  [alt]="getGatoNome(ninhada.mae_id)"
+                  class="parent-img">
+              </div>
+              <p class="parent-label">Mãe</p>
+              <p class="parent-name">{{getGatoNome(ninhada.mae_id)}}</p>
+            </div>
+
+            <!-- Símbolo de conexão -->
+            <div class="genetic-separator">
+              <span class="separator-symbol">+</span>
+              <div class="separator-line"></div>
+            </div>
+
+            <!-- Pai -->
+            <div class="parent-container pai">
+              <div class="parent-image">
+                <img 
+                  [src]="getGatoImagem(ninhada.pai_id) || 'assets/imagens/default-cat.jpg'" 
+                  [alt]="getGatoNome(ninhada.pai_id)"
+                  class="parent-img">
+              </div>
+              <p class="parent-label">Pai</p>
+              <p class="parent-name">{{getGatoNome(ninhada.pai_id)}}</p>
+            </div>
+          </div>
+
+          <!-- Linha de conexão para os filhotes -->
+          <div class="genetics-arrow">
+            <svg viewBox="0 0 2 30" preserveAspectRatio="none" class="arrow-line">
+              <line x1="1" y1="0" x2="1" y2="20" stroke="currentColor" stroke-width="2"/>
+              <polygon points="1,25 -2,20 4,20" fill="currentColor"/>
+            </svg>
+          </div>
+
+          <!-- Card com informações dos filhotes -->
+          <div class="litter-info-card">
+            <h3 class="litter-name">{{ninhada.nome}}</h3>
+            
+            <!-- Imagem da Ninhada -->
+            <div class="ninhada-image" *ngIf="ninhada.imagem">
+              <img [src]="ninhada.imagem" [alt]="ninhada.nome" class="ninhada-img">
+            </div>
+            
+            <div class="litter-details">
+              <span class="litter-icon">🐱</span>
+              <span class="litter-count">{{ninhada.quantidade_filhotes}}</span>
+              <span class="litter-text">filhote(s)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensagem quando não há ninhadas -->
+      <div *ngIf="ninhadas.length === 0" class="no-content">
+        <p>Nenhuma ninhada registrada no momento.</p>
+      </div>
+    </section>
+  </mat-card-content>
+</mat-card>

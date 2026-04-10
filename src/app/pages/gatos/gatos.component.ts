@@ -15,6 +15,7 @@ export class GatosComponent implements OnInit {
   matrizes: Gato[] = [];
   padreadores: Gato[] = [];
   ninhadas: Ninhada[] = [];
+  private todosGatos: Gato[] = [];
 
   constructor(private gatoService: GatoService, private ninhadaService: NinhadaService) {}
 
@@ -30,6 +31,7 @@ export class GatosComponent implements OnInit {
         const gatosAdultos = gatos.filter((g: Gato) => g.tipo === 'gato');
         this.matrizes = gatosAdultos.filter((g: Gato) => g.sexo === 'Fêmea');
         this.padreadores = gatosAdultos.filter((g: Gato) => g.sexo === 'Macho');
+        this.todosGatos = gatosAdultos;
       },
       error: (err) => console.error('Erro ao carregar gatos:', err)
     });
@@ -45,8 +47,12 @@ export class GatosComponent implements OnInit {
   }
 
   getGatoNome(id: number): string {
-    const todosGatos = [...this.matrizes, ...this.padreadores];
-    const gato = todosGatos.find(g => g.id === id);
+    const gato = this.todosGatos.find(g => g.id === id);
     return gato ? gato.nome : 'Desconhecido';
+  }
+
+  getGatoImagem(id: number): string {
+    const gato = this.todosGatos.find(g => g.id === id);
+    return gato?.imagem || 'assets/imagens/default-cat.jpg';
   }
 }

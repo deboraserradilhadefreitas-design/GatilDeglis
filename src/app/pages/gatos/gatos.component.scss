@@ -1,116 +1,770 @@
+// ==================== PALETA DE CORES ====================
+$primary-color: #1d83e2;
+$primary-light: #e8f2ff;
+$text-dark: #1f3a6c;
+$text-secondary: #666;
+$border-light: rgba(199, 220, 255, 0.45);
+$shadow-light: 0 4px 12px rgba(0, 0, 0, 0.1);
+$shadow-medium: 0 8px 20px rgba(0, 0, 0, 0.12);
+$shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.15);
+
+// ==================== ANIMAÇÕES ====================
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+// ==================== CONTAINER PRINCIPAL ====================
 .container {
-  max-width: 1060px;
+  max-width: 1200px;
   margin: 92px auto 40px;
-  padding: 24px;
-  background-color: rgba(254, 255, 255, 0.95);
-  border-radius: 18px;
+  padding: 40px 32px;
+  background: linear-gradient(135deg, rgba(254, 255, 255, 0.98) 0%, rgba(232, 242, 255, 0.5) 100%);
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 12px 28px rgba(14, 32, 80, 0.18);
+  box-shadow: $shadow-medium;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: $shadow-hover;
+  }
 }
 
 .gatos-card {
   border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
+.card-content {
+  padding: 0;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+// ==================== HERO SECTION ====================
 .hero-section {
   text-align: center;
-  padding: 26px 0 16px;
-  border-bottom: 2px solid rgba(199, 220, 255, 0.45);
-  margin-bottom: 22px;
+  padding: 32px 0 28px;
+  border-bottom: 2px solid $border-light;
+  margin-bottom: 48px;
+  animation: fadeInUp 0.5s ease-out;
+
+  .hero-title {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: $primary-color;
+    margin: 0 0 16px 0;
+    text-shadow: 0 2px 4px rgba(29, 131, 226, 0.1);
+    animation: slideInDown 0.5s ease-out;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+    color: $text-dark;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.6;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
+  }
 }
 
-.hero-title {
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-  color: #1d83e2;
-  margin-bottom: 12px;
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.hero-subtitle {
-  font-size: 1rem;
-  color: #1f3a6c;
-  max-width: 760px;
-  margin: 0 auto;
+// ==================== SECTION HEADER ====================
+.section-header {
+  margin-bottom: 32px;
+  animation: fadeInUp 0.5s ease-out;
+
+  h2 {
+    color: $primary-color;
+    font-size: 28px;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-description {
+    color: $text-secondary;
+    font-size: 14px;
+    margin: 0;
+    font-style: italic;
+  }
 }
 
+// ==================== GATOS SECTION ====================
 .gatos-section {
-  margin-bottom: 40px;
+  margin-bottom: 56px;
+  animation: fadeInUp 0.6s ease-out;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
+  &.ninhada-section {
+    background: linear-gradient(135deg, $primary-light 0%, rgba(232, 242, 255, 0.3) 100%);
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid $border-light;
+    margin-left: -32px;
+    margin-right: -32px;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin-bottom: -40px;
+    padding-bottom: 40px;
+  }
 }
 
-.gatos-section h2 {
-  color: #1d83e2;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
+// ==================== GATOS LIST & CARDS ====================
 .gatos-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
+  animation: fadeInUp 0.7s ease-out;
+
+  &.gatos-list-limited {
+    max-width: 900px;
+    margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 300px));
+    justify-content: center;
+  }
 }
 
 .gato-card {
-  background: #f9f9f9;
-  border-radius: 12px;
-  padding: 16px;
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: $shadow-light;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  animation: scaleIn 0.5s ease-out;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $shadow-hover;
+
+    .gato-img {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.gato-card-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 260px;
+
+  .gato-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+}
+
+.gato-card-content {
+  padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: calc(33.333% - 20px);
-  min-width: 200px;
+
+  h3 {
+    font-size: 18px;
+    color: $text-dark;
+    margin: 0 0 12px 0;
+    font-weight: 700;
+  }
+
+  .gato-info {
+    font-size: 13px;
+    color: $text-secondary;
+    margin: 6px 0;
+    line-height: 1.4;
+
+    strong {
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
 }
 
-.gato-img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 12px;
+// ==================== NINHADAS CONTAINER ====================
+.ninhadas-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  animation: fadeInUp 0.8s ease-out;
 }
 
-.gato-card h3 {
-  font-size: 18px;
-  color: #1f3a6c;
-  margin-bottom: 8px;
+.ninhada-family-card {
+  background: white;
+  border-radius: 14px;
+  padding: 28px 22px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(199, 220, 255, 0.3);
+  animation: scaleIn 0.6s ease-out;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(29, 131, 226, 0.12);
+    border-color: $primary-color;
+
+    .parent-image {
+      transform: scale(1.03);
+    }
+
+    .litter-info-card {
+      background: $primary-light;
+      border-color: $primary-color;
+    }
+  }
 }
 
-.gato-card p {
-  font-size: 14px;
-  color: #666;
+// ==================== NINHADA IMAGE ====================
+.ninhada-image {
+  width: 90%;
+  max-width: 240px;
+  height: 170px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 14px auto;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(199, 220, 255, 0.3);
+
+  .ninhada-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 }
 
-.ninhadas-list {
+// ==================== GENETICS LAYOUT ====================
+.ninhada-genetics {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  position: relative;
 }
 
-.ninhada-card {
-  background: #f9f9f9;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: calc(33.333% - 20px);
-  min-width: 200px;
+.parent-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 120px;
+  animation: slideInLeft 0.5s ease-out;
+
+  &.pai {
+    animation: slideInRight 0.5s ease-out;
+  }
 }
 
-.ninhada-img {
+.parent-image {
   width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 12px;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  border: 2px solid $border-light;
+
+  .parent-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
-.ninhada-card h3 {
-  font-size: 18px;
-  color: #1f3a6c;
+.parent-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: $primary-color;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 6px 0 3px 0;
+}
+
+.parent-name {
+  font-size: 13px;
+  color: $text-dark;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+// ==================== GENETIC SEPARATOR ====================
+.genetic-separator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 48px;
+
+  .separator-symbol {
+    width: 36px;
+    height: 36px;
+    background: $primary-color;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(29, 131, 226, 0.3);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .separator-line {
+    width: 2px;
+    height: 18px;
+    background: linear-gradient(
+      to bottom,
+      $primary-color 0%,
+      $primary-color 50%,
+      transparent 100%
+    );
+  }
+}
+
+// ==================== GENETICS ARROW ====================
+.genetics-arrow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+  height: 32px;
+  color: $primary-color;
+
+  .arrow-line {
+    width: 26px;
+    filter: drop-shadow(0 2px 4px rgba(29, 131, 226, 0.28));
+    animation: pulse 2s ease-in-out infinite;
+  }
+}
+
+// ==================== LITTER INFO CARD ====================
+.litter-info-card {
+  background: linear-gradient(135deg, #f5fbff 0%, #fafbff 100%);
+  border-radius: 10px;
+  padding: 16px 14px;
+  text-align: center;
+  border: 1px solid $border-light;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease-out 0.2s both;
+}
+
+.litter-icon {
+  font-size: 28px;
+  display: inline-block;
   margin-bottom: 8px;
+  animation: fadeInUp 0.5s ease-out 0.3s both;
 }
 
-.ninhada-card p {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 4px;
+.litter-name {
+  font-size: 16px;
+  color: $text-dark;
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.litter-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+
+  .litter-count {
+    color: $primary-color;
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .litter-text {
+    color: $text-secondary;
+    font-weight: 500;
+  }
+}
+
+// ==================== NO CONTENT ====================
+.no-content {
+  text-align: center;
+  padding: 60px 20px;
+  color: $text-secondary;
+  font-size: 16px;
+  animation: fadeInUp 0.5s ease-out;
+
+  p {
+    margin: 0;
+  }
+}
+
+// ==================== RESPONSIVIDADE ====================
+@media (max-width: 768px) {
+  .container {
+    margin: 80px auto 32px;
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+
+  .hero-section {
+    padding: 24px 0 20px;
+    margin-bottom: 32px;
+
+    .hero-title {
+      font-size: 28px;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+    }
+  }
+
+  .gatos-list {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+
+    &.gatos-list-limited {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 260px));
+    }
+  }
+
+  .gato-card-image-wrapper {
+    height: 190px;
+  }
+
+  .ninhadas-container {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .ninhada-family-card {
+    padding: 18px 16px;
+  }
+
+  .ninhada-image {
+    height: 140px;
+    max-width: 220px;
+    margin: 12px auto;
+  }
+
+  .ninhada-genetics {
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .parent-container {
+    width: 100px;
+  }
+
+  .parent-image {
+    margin-bottom: 8px;
+    border-radius: 8px;
+  }
+
+  .parent-label {
+    font-size: 9px;
+    margin: 4px 0 2px 0;
+  }
+
+  .parent-name {
+    font-size: 12px;
+  }
+
+  .genetic-separator {
+    min-width: 42px;
+
+    .separator-symbol {
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
+    }
+
+    .separator-line {
+      height: 16px;
+    }
+  }
+
+  .genetics-arrow {
+    height: 26px;
+    margin-bottom: 12px;
+
+    .arrow-line {
+      width: 22px;
+    }
+  }
+
+  .litter-info-card {
+    padding: 12px 10px;
+  }
+
+  .litter-icon {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .litter-name {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .litter-details {
+    gap: 6px;
+    font-size: 12px;
+
+    .litter-count {
+      font-size: 16px;
+    }
+  }
+
+  .gatos-section {
+    margin-bottom: 40px;
+
+    &.ninhada-section {
+      margin-left: -20px;
+      margin-right: -20px;
+      padding: 28px 20px;
+    }
+  }
+
+  .section-header h2 {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    margin: 70px auto 24px;
+    padding: 20px 16px;
+  }
+
+  .hero-section {
+    padding: 20px 0 16px;
+    margin-bottom: 24px;
+
+    .hero-title {
+      font-size: 24px;
+    }
+
+    .hero-subtitle {
+      font-size: 13px;
+    }
+  }
+
+  .gatos-list {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+
+    &.gatos-list-limited {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 200px));
+    }
+  }
+
+  .gato-card {
+    border-radius: 10px;
+  }
+
+  .gato-card-image-wrapper {
+    height: 160px;
+  }
+
+  .gato-card-content {
+    padding: 12px;
+
+    h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .gato-info {
+      font-size: 12px;
+      margin: 4px 0;
+    }
+  }
+
+  .ninhadas-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .ninhada-family-card {
+    padding: 14px 12px;
+    border-radius: 10px;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+  }
+
+  .ninhada-image {
+    height: 130px;
+    max-width: 190px;
+    margin: 10px auto;
+    border-radius: 8px;
+  }
+
+  .ninhada-genetics {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .parent-container {
+    width: 85px;
+  }
+
+  .parent-image {
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border-width: 1.5px;
+  }
+
+  .parent-label {
+    font-size: 8px;
+    margin: 3px 0 1px 0;
+    letter-spacing: 0.05em;
+  }
+
+  .parent-name {
+    font-size: 11px;
+  }
+
+  .genetic-separator {
+    min-width: 36px;
+
+    .separator-symbol {
+      width: 28px;
+      height: 28px;
+      font-size: 16px;
+    }
+
+    .separator-line {
+      height: 12px;
+    }
+  }
+
+  .genetics-arrow {
+    height: 22px;
+    margin-bottom: 8px;
+
+    .arrow-line {
+      width: 18px;
+    }
+  }
+
+  .litter-icon {
+    font-size: 22px;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+
+  .litter-name {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .litter-info-card {
+    padding: 10px 8px;
+    border-radius: 8px;
+  }
+
+  .litter-details {
+    gap: 4px;
+    font-size: 11px;
+
+    .litter-count {
+      font-size: 14px;
+    }
+
+    .litter-text {
+      font-size: 10px;
+    }
+  }
+
+  .gatos-section {
+    margin-bottom: 28px;
+
+    &.ninhada-section {
+      margin-left: -16px;
+      margin-right: -16px;
+      padding: 20px 16px;
+      border-radius: 12px;
+    }
+  }
+
+  .section-header h2 {
+    font-size: 20px;
+    gap: 8px;
+  }
+
+  .section-header .section-description {
+    font-size: 12px;
+  }
 }
