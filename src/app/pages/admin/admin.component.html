@@ -1,235 +1,265 @@
 <div class="admin-layout">
-    <div class="form-container">
-        <form [formGroup]="gatoForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+    <!-- Card para Cadastro de Animais -->
+    <div class="card">
+        <div class="form-container">
+            <form [formGroup]="gatoForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+                <header class="admin-section-header">
+                    <h2>{{ editando ? 'Editar Animal' : 'Cadastro de Animais' }} 😺</h2>
+                    <p class="admin-section-subtitle">Registre novas fichas de felinos instantaneamente ou edite as existentes.</p>
+                </header>
+
+                <!-- Mensagem de sucesso/erro -->
+                <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" class="message">
+                    {{ mensagem }}
+                </div>
+
+                <!-- Upload da imagem -->
+                <div class="form-field">
+                    <mat-label>Imagem do Animal:</mat-label>
+                    <input type="file" (change)="onFileChange($event)" accept="image/*" class="file-input">
+                </div>
+
+                <div class="preview-container" *ngIf="imagemPreview">
+                    <p>Preview da imagem:</p>
+                    <img class="preview-img" [src]="imagemPreview" alt="Prévia do animal" />
+                </div>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Nome:</mat-label>
+                    <input matInput formControlName="nome" type="text">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Raça:</mat-label>
+                    <mat-select formControlName="raca" required>
+                        <mat-option value="" disabled>Selecione uma raça</mat-option>
+                        <mat-option *ngFor="let opcao of racas" [value]="opcao">{{ opcao }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="gatoForm.get('raca')?.hasError('required')">A raça é obrigatória.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Sexo:</mat-label>
+                    <mat-select formControlName="sexo">
+                        <mat-option value="">Selecione</mat-option>
+                        <mat-option value="Macho">Macho</mat-option>
+                        <mat-option value="Fêmea">Fêmea</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Coloração:</mat-label>
+                    <input matInput formControlName="coloracao" type="text">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Status (Opcional):</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option value="">Não informado</mat-option>
+                        <mat-option value="Disponível">Disponível</mat-option>
+                        <mat-option value="Vendido">Vendido</mat-option>
+                        <mat-option value="Reservado">Reservado</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Observações:</mat-label>
+                    <textarea matInput formControlName="observacoes"></textarea>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Idade (em anos):</mat-label>
+                    <input matInput type="number" min="0" max="30" formControlName="idade">
+                    <mat-hint>Idade aproximada do animal em anos</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Tipo:</mat-label>
+                    <mat-select formControlName="tipo">
+                        <mat-option value="gato">Gato Adulto</mat-option>
+                        <mat-option value="filhote">Filhote</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <div class="button-group">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="carregando" class="btn-submit">
+                        <mat-icon *ngIf="!carregando">{{ editando ? 'update' : 'add' }}</mat-icon>
+                        {{ carregando ? (editando ? 'Atualizando...' : 'Cadastrando...') : (editando ? 'Atualizar Animal' : 'Cadastrar Animal') }}
+                    </button>
+                    <button mat-button type="button" *ngIf="editando" (click)="cancelarEdicao()" class="btn-cancel">
+                        <mat-icon>cancel</mat-icon>
+                        Cancelar Edição
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Card para Lista de Animais -->
+    <div class="card">
+        <div class="lista-gatos">
             <header class="admin-section-header">
-                <h2>{{ editando ? 'Editar Animal' : 'Cadastro de Animais' }} 😺</h2>
-                <p class="admin-section-subtitle">Registre novas fichas de felinos instantaneamente ou edite as existentes.</p>
+                <h3>Lista de Animais Cadastrados</h3>
+                <p class="admin-section-subtitle">Gerencie, edite ou exclua diretamente da tabela abaixo.</p>
             </header>
 
-            <!-- Mensagem de sucesso/erro -->
-        <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" style="margin-bottom: 20px; padding: 12px; border-radius: 4px; text-align: center;">
-            {{ mensagem }}
+            <div *ngIf="carregando" class="loading">Carregando...</div>
+            <div *ngIf="!carregando && gatos.length === 0" class="empty">Nenhum animal cadastrado ainda.</div>
+
+            <div class="table-wrap" *ngIf="!carregando && gatos.length > 0">
+                <table class="lista-table">
+                    <thead>
+                        <tr>
+                            <th>Imagem</th>
+                            <th>Nome</th>
+                            <th>Raça</th>
+                            <th>Sexo</th>
+                            <th>Coloração</th>
+                            <th>Tipo</th>
+                            <th>Idade</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let gato of gatos; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0}">
+                            <td class="image-cell">
+                                <img *ngIf="gato.imagem" [src]="gato.imagem" alt="{{gato.nome}}" class="lista-img" />
+                                <span *ngIf="!gato.imagem">—</span>
+                            </td>
+                            <td>{{ gato.nome }}</td>
+                            <td>{{ gato.raca }}</td>
+                            <td>{{ gato.sexo }}</td>
+                            <td>{{ gato.coloracao }}</td>
+                            <td>{{ gato.tipo === 'gato' ? 'Gato Adulto' : 'Filhote' }}</td>
+                            <td>{{ gato.idade ? gato.idade + ' anos' : '—' }}</td>
+                            <td>{{ gato.status || '—' }}</td>
+                            <td class="actions-cell">
+                                <button mat-icon-button (click)="editarGato(gato)" matTooltip="Editar" class="btn-edit">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="deletarGato(gato.id!)" matTooltip="Excluir" class="btn-delete">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <!-- Upload da imagem -->
-        <mat-label>Imagem do Animal:</mat-label>
-        <input type="file" (change)="onFileChange($event)" accept="image/*">
-
-        <div class="preview-container" *ngIf="imagemPreview">
-            <p>Preview da imagem:</p>
-            <img class="preview-img" [src]="imagemPreview" alt="Prévia do animal" />
-        </div>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Nome:</mat-label>
-            <input matInput formControlName="nome" type="text">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Raça:</mat-label>
-            <mat-select formControlName="raca" required>
-                <mat-option value="" disabled>Selecione uma raça</mat-option>
-                <mat-option *ngFor="let opcao of racas" [value]="opcao">{{ opcao }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="gatoForm.get('raca')?.hasError('required')">A raça é obrigatória.</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Sexo:</mat-label>
-            <mat-select formControlName="sexo">
-                <mat-option value="">Selecione</mat-option>
-                <mat-option value="Macho">Macho</mat-option>
-                <mat-option value="Fêmea">Fêmea</mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Coloração:</mat-label>
-            <input matInput formControlName="coloracao" type="text">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Status (Opcional):</mat-label>
-            <mat-select formControlName="status">
-                <mat-option value="">Não informado</mat-option>
-                <mat-option value="Disponível">Disponível</mat-option>
-                <mat-option value="Vendido">Vendido</mat-option>
-                <mat-option value="Reservado">Reservado</mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Observações:</mat-label>
-            <textarea matInput formControlName="observacoes"></textarea>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Idade (em anos):</mat-label>
-            <input matInput type="number" min="0" max="30" formControlName="idade">
-            <mat-hint>Idade aproximada do animal em anos</mat-hint>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Tipo:</mat-label>
-            <mat-select formControlName="tipo">
-                <mat-option value="gato">Gato Adulto</mat-option>
-                <mat-option value="filhote">Filhote</mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <button class="btn-submit" type="submit" [disabled]="carregando">
-            {{ carregando ? (editando ? 'Atualizando...' : 'Cadastrando...') : (editando ? 'Atualizar Animal' : 'Cadastrar Animal') }}
-        </button>
-
-        <button type="button" *ngIf="editando" (click)="cancelarEdicao()" class="btn-cancel" style="margin-left: 10px;">
-            Cancelar Edição
-        </button>
-    </form>
-</div>
-
-<div class="lista-gatos">
-    <header class="admin-section-header">
-        <h3>Lista de Animais Cadastrados</h3>
-        <p class="admin-section-subtitle">Gerencie, edite ou exclua diretamente da tabela abaixo.</p>
-    </header>
-
-    <div *ngIf="carregando">Carregando...</div>
-    <div *ngIf="!carregando && gatos.length === 0">Nenhum animal cadastrado ainda.</div>
-
-    <div class="table-wrap">
-        <table *ngIf="!carregando && gatos.length > 0" class="lista-table" style="margin-top: 20px;">
-        <thead>
-            <tr>
-                <th>Imagem</th>
-                <th>Nome</th>
-                <th>Raça</th>
-                <th>Sexo</th>
-                <th>Coloração</th>
-                <th>Tipo</th>
-                <th>Idade</th>
-                <th>Status</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let gato of gatos" style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 8px; text-align: center;">
-                    <img *ngIf="gato.imagem" [src]="gato.imagem" alt="{{gato.nome}}" class="lista-img" />
-                    <span *ngIf="!gato.imagem">—</span>
-                </td>
-                <td>{{ gato.nome }}</td>
-                <td>{{ gato.raca }}</td>
-                <td>{{ gato.sexo }}</td>
-                <td>{{ gato.coloracao }}</td>
-                <td>{{ gato.tipo === 'gato' ? 'Gato Adulto' : 'Filhote' }}</td>
-                <td>{{ gato.idade ? gato.idade + ' anos' : '—' }}</td>
-                <td>{{ gato.status || '—' }}</td>
-                <td>
-                    <button type="button" (click)="editarGato(gato)" style="margin-right: 8px;">Editar</button>
-                    <button type="button" (click)="deletarGato(gato.id!)" style="color: #fff; background: #d32f2f; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
     </div>
-</div>
 
-<div class="form-container">
-    <form [formGroup]="ninhadaForm" (ngSubmit)="onSubmitNinhada()" enctype="multipart/form-data">
-        <header class="admin-section-header">
-            <h2>{{ editandoNinhada ? 'Editar Ninhada' : 'Cadastro de Ninhadas' }} 🍼</h2>
-            <p class="admin-section-subtitle">{{ editandoNinhada ? 'Altere as informações da ninhada.' : 'Registre novas ninhadas com informações dos pais e filhotes.' }}</p>
-        </header>
+    <!-- Card para Cadastro de Ninhadas -->
+    <div class="card">
+        <div class="form-container">
+            <form [formGroup]="ninhadaForm" (ngSubmit)="onSubmitNinhada()" enctype="multipart/form-data">
+                <header class="admin-section-header">
+                    <h2>{{ editandoNinhada ? 'Editar Ninhada' : 'Cadastro de Ninhadas' }} 🍼</h2>
+                    <p class="admin-section-subtitle">{{ editandoNinhada ? 'Altere as informações da ninhada.' : 'Registre novas ninhadas com informações dos pais e filhotes.' }}</p>
+                </header>
 
-        <!-- Mensagem de sucesso/erro -->
-        <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" style="margin-bottom: 20px; padding: 12px; border-radius: 4px; text-align: center;">
-            {{ mensagem }}
+                <!-- Mensagem de sucesso/erro -->
+                <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" class="message">
+                    {{ mensagem }}
+                </div>
+
+                <!-- Upload da imagem -->
+                <div class="form-field">
+                    <mat-label>Imagem da Ninhada:</mat-label>
+                    <input type="file" (change)="onFileChangeNinhada($event)" accept="image/*" class="file-input">
+                </div>
+
+                <div class="preview-container" *ngIf="imagemNinhadaPreview">
+                    <p>Preview da imagem:</p>
+                    <img class="preview-img" [src]="imagemNinhadaPreview" alt="Prévia da ninhada" />
+                </div>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Nome da Ninhada:</mat-label>
+                    <input matInput formControlName="nome" type="text">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Pai:</mat-label>
+                    <mat-select formControlName="pai_id" required>
+                        <mat-option value="" disabled>Selecione o pai</mat-option>
+                        <mat-option *ngFor="let gato of machos" [value]="gato.id">{{ gato.nome }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="ninhadaForm.get('pai_id')?.hasError('required')">O pai é obrigatório.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Mãe:</mat-label>
+                    <mat-select formControlName="mae_id" required>
+                        <mat-option value="" disabled>Selecione a mãe</mat-option>
+                        <mat-option *ngFor="let gato of femeas" [value]="gato.id">{{ gato.nome }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="ninhadaForm.get('mae_id')?.hasError('required')">A mãe é obrigatória.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Quantidade de Filhotes:</mat-label>
+                    <input matInput formControlName="quantidade_filhotes" type="number" min="1">
+                </mat-form-field>
+
+                <div class="button-group">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="carregando" class="btn-submit">
+                        <mat-icon *ngIf="!carregando">{{ editandoNinhada ? 'update' : 'add' }}</mat-icon>
+                        {{ carregando ? (editandoNinhada ? 'Atualizando...' : 'Cadastrando...') : (editandoNinhada ? 'Atualizar Ninhada' : 'Cadastrar Ninhada') }}
+                    </button>
+                    <button mat-button type="button" *ngIf="editandoNinhada" (click)="cancelarEdicaoNinhada()" class="btn-cancel">
+                        <mat-icon>cancel</mat-icon>
+                        Cancelar Edição
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <!-- Upload da imagem -->
-        <mat-label>Imagem da Ninhada:</mat-label>
-        <input type="file" (change)="onFileChangeNinhada($event)" accept="image/*">
-
-        <div class="preview-container" *ngIf="imagemNinhadaPreview">
-            <p>Preview da imagem:</p>
-            <img class="preview-img" [src]="imagemNinhadaPreview" alt="Prévia da ninhada" />
-        </div>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Nome da Ninhada:</mat-label>
-            <input matInput formControlName="nome" type="text">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Pai:</mat-label>
-            <mat-select formControlName="pai_id" required>
-                <mat-option value="" disabled>Selecione o pai</mat-option>
-                <mat-option *ngFor="let gato of machos" [value]="gato.id">{{ gato.nome }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="ninhadaForm.get('pai_id')?.hasError('required')">O pai é obrigatório.</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Mãe:</mat-label>
-            <mat-select formControlName="mae_id" required>
-                <mat-option value="" disabled>Selecione a mãe</mat-option>
-                <mat-option *ngFor="let gato of femeas" [value]="gato.id">{{ gato.nome }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="ninhadaForm.get('mae_id')?.hasError('required')">A mãe é obrigatória.</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-            <mat-label>Quantidade de Filhotes:</mat-label>
-            <input matInput formControlName="quantidade_filhotes" type="number" min="1">
-        </mat-form-field>
-
-        <button class="btn-submit" type="submit" [disabled]="carregando">
-            {{ carregando ? (editandoNinhada ? 'Atualizando...' : 'Cadastrando...') : (editandoNinhada ? 'Atualizar Ninhada' : 'Cadastrar Ninhada') }}
-        </button>
-
-        <button type="button" *ngIf="editandoNinhada" (click)="cancelarEdicaoNinhada()" class="btn-cancel" style="margin-left: 10px;">
-            Cancelar Edição
-        </button>
-    </form>
-</div>
-
-<div class="lista-gatos">
-    <header class="admin-section-header">
-        <h3>Lista de Ninhadas Cadastradas</h3>
-        <p class="admin-section-subtitle">Gerencie as ninhadas registradas.</p>
-    </header>
-
-    <div *ngIf="ninhadas.length === 0">Nenhuma ninhada cadastrada ainda.</div>
-
-    <div class="table-wrap">
-        <table *ngIf="ninhadas.length > 0" class="lista-table" style="margin-top: 20px;">
-        <thead>
-            <tr>
-                <th>Imagem</th>
-                <th>Nome</th>
-                <th>Pai</th>
-                <th>Mãe</th>
-                <th>Quantidade de Filhotes</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let ninhada of ninhadas" style="border-bottom: 1px solid #ddd;">
-                <td style="padding: 8px; text-align: center;">
-                    <img *ngIf="ninhada.imagem" [src]="ninhada.imagem" alt="{{ninhada.nome}}" class="lista-img" />
-                    <span *ngIf="!ninhada.imagem">—</span>
-                </td>
-                <td>{{ ninhada.nome }}</td>
-                <td>{{ getGatoNome(ninhada.pai_id) }}</td>
-                <td>{{ getGatoNome(ninhada.mae_id) }}</td>
-                <td>{{ ninhada.quantidade_filhotes }}</td>
-                <td>
-                    <button type="button" (click)="editarNinhada(ninhada)" style="margin-right: 8px;">Editar</button>
-                    <button type="button" (click)="deletarNinhada(ninhada.id!)" style="color: #fff; background: #d32f2f; border: none; padding: 5px 10px; cursor: pointer;">Excluir</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
     </div>
-</div>
+
+    <!-- Card para Lista de Ninhadas -->
+    <div class="card">
+        <div class="lista-gatos">
+            <header class="admin-section-header">
+                <h3>Lista de Ninhadas Cadastradas</h3>
+                <p class="admin-section-subtitle">Gerencie as ninhadas registradas.</p>
+            </header>
+
+            <div *ngIf="ninhadas.length === 0" class="empty">Nenhuma ninhada cadastrada ainda.</div>
+
+            <div class="table-wrap" *ngIf="ninhadas.length > 0">
+                <table class="lista-table">
+                    <thead>
+                        <tr>
+                            <th>Imagem</th>
+                            <th>Nome</th>
+                            <th>Pai</th>
+                            <th>Mãe</th>
+                            <th>Quantidade de Filhotes</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let ninhada of ninhadas; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0}">
+                            <td class="image-cell">
+                                <img *ngIf="ninhada.imagem" [src]="ninhada.imagem" alt="{{ninhada.nome}}" class="lista-img" />
+                                <span *ngIf="!ninhada.imagem">—</span>
+                            </td>
+                            <td>{{ ninhada.nome }}</td>
+                            <td>{{ getGatoNome(ninhada.pai_id) }}</td>
+                            <td>{{ getGatoNome(ninhada.mae_id) }}</td>
+                            <td>{{ ninhada.quantidade_filhotes }}</td>
+                            <td class="actions-cell">
+                                <button mat-icon-button (click)="editarNinhada(ninhada)" matTooltip="Editar" class="btn-edit">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="deletarNinhada(ninhada.id!)" matTooltip="Excluir" class="btn-delete">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
