@@ -13,6 +13,10 @@ export const routes: Routes = [
     loadChildren: () =>             //"lazy loading" Só carrega o código do módulo filhotes quando o usuário acessar a rota /filhotes.
         import('./pages/filhotes/filhotes.module').then(m => m.FilhotesModule)
     },
+    {path: 'reservas',
+    loadChildren: () =>             //"lazy loading" Só carrega o código do módulo reservas quando o usuário acessar a rota /reservas.
+        import('./pages/reservas/reservas.module').then(m => m.ReservasModule)
+    },
     {path: 'admin',
     loadChildren: () =>             //"lazy loading" Só carrega o código do módulo admin quando o usuário acessar a rota /admin.
         import('./pages/admin/admin.module').then(m => m.AdminModule)

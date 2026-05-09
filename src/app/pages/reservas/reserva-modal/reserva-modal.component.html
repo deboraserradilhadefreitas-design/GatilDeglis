@@ -1,0 +1,62 @@
+<div class="modal-content">
+  <div mat-dialog-title class="modal-header">
+    <h2>Reservar Filhote</h2>
+    <p class="selected-pet">{{ gato.nome }} ({{ gato.raca }})</p>
+  </div>
+
+  <mat-dialog-content class="modal-body">
+    <form [formGroup]="reservaForm" class="reserva-form">
+      
+      <!-- Info do Filhote -->
+      <div class="pet-info">
+        <div class="info-card">
+          <strong>Filhote Selecionado:</strong>
+          <p>
+            <span>{{ gato.nome }}</span> - {{ gato.raca }}
+            <span *ngIf="gato.coloracao"> ({{ gato.coloracao }})</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Nome -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Nome Completo:</mat-label>
+        <input matInput formControlName="nome" type="text" placeholder="Digite seu nome completo">
+        <mat-error *ngIf="nome?.hasError('required')">Nome é obrigatório.</mat-error>
+        <mat-error *ngIf="nome?.hasError('minlength')">Nome deve ter pelo menos 3 caracteres.</mat-error>
+      </mat-form-field>
+
+      <!-- Email -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Email:</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="seu.email@exemplo.com">
+        <mat-error *ngIf="email?.hasError('required')">Email é obrigatório.</mat-error>
+        <mat-error *ngIf="email?.hasError('email')">Email inválido.</mat-error>
+      </mat-form-field>
+
+      <!-- Telefone/WhatsApp -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Telefone/WhatsApp:</mat-label>
+        <input matInput formControlName="telefone" type="tel" placeholder="(11) 99999-9999">
+        <mat-error *ngIf="telefone?.hasError('required')">Telefone é obrigatório.</mat-error>
+        <mat-error *ngIf="telefone?.hasError('minlength')">Telefone deve ter pelo menos 10 dígitos.</mat-error>
+      </mat-form-field>
+
+      <!-- Observações -->
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Observações (opcional):</mat-label>
+        <textarea matInput formControlName="observacoes" rows="3" placeholder="Deixe aqui qualquer informação adicional..."></textarea>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="modal-actions">
+    <button mat-button (click)="cancelar()" class="btn-cancel">
+      Cancelar
+    </button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!reservaForm.valid" class="btn-confirm">
+      <mat-icon>check_circle</mat-icon>
+      Confirmar Reserva
+    </button>
+  </mat-dialog-actions>
+</div>

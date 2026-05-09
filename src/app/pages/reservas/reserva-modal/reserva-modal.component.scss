@@ -1,0 +1,154 @@
+// Variáveis
+:root {
+  --primary-color: #6a4b84;
+  --secondary-color: #a66bb3;
+  --accent-color: #3c1b5e;
+  --light-bg: #faf5ff;
+  --border-color: #e8deed;
+  --text-color: #342548;
+  --shadow: rgba(56, 20, 102, 0.16);
+}
+
+.modal-content {
+  width: 100%;
+
+  .modal-header {
+    padding: 24px;
+    border-bottom: 2px solid var(--border-color);
+    background: linear-gradient(135deg, #f5ebff 0%, #faf5ff 100%);
+
+    h2 {
+      margin: 0 0 8px;
+      color: var(--accent-color);
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+
+    .selected-pet {
+      margin: 0;
+      color: var(--secondary-color);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+  }
+
+  .modal-body {
+    padding: 24px;
+    max-height: 500px;
+    overflow-y: auto;
+
+    .reserva-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      .pet-info {
+        margin-bottom: 16px;
+
+        .info-card {
+          background: #f5ebff;
+          border-left: 4px solid var(--primary-color);
+          padding: 16px;
+          border-radius: 8px;
+
+          strong {
+            display: block;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+          }
+
+          p {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 1rem;
+            line-height: 1.4;
+
+            span {
+              font-weight: 500;
+              color: var(--primary-color);
+            }
+
+            span:last-child {
+              font-weight: normal;
+              color: var(--text-color);
+            }
+          }
+        }
+      }
+
+      .form-field {
+        width: 100%;
+        margin-bottom: 12px;
+
+        mat-label {
+          color: var(--text-color);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .modal-actions {
+    padding: 24px;
+    border-top: 1px solid var(--border-color);
+    background: var(--light-bg);
+    gap: 12px;
+
+    .btn-cancel {
+      color: var(--text-color);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(106, 75, 132, 0.1);
+      }
+    }
+
+    .btn-confirm {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      transition: all 0.3s ease;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--shadow);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      mat-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 600px) {
+  .modal-content {
+    .modal-header {
+      padding: 16px;
+
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
+
+    .modal-body {
+      padding: 16px;
+      max-height: calc(100vh - 200px);
+    }
+
+    .modal-actions {
+      padding: 16px;
+      flex-direction: column-reverse;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

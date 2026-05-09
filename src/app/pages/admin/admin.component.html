@@ -262,4 +262,106 @@
             </div>
         </div>
     </div>
+
+    <!-- Card para Lista de Reservas -->
+    <div class="card" style="grid-column: 1 / -1;">
+        <div class="lista-gatos">
+            <header class="admin-section-header">
+                <h3>Solicitações de Reserva 💌</h3>
+                <p class="admin-section-subtitle">Visualize todas as solicitações de reserva recebidas e entre em contato com os interessados.</p>
+            </header>
+
+            <div *ngIf="carregando" class="loading">Carregando reservas...</div>
+            <div *ngIf="!carregando && reservas.length === 0" class="empty">Nenhuma reserva registrada ainda.</div>
+
+            <div class="table-wrap" *ngIf="!carregando && reservas.length > 0">
+                <table class="lista-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Telefone/WhatsApp</th>
+                            <th>Filhote Reservado</th>
+                            <th>Data da Solicitação</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let reserva of reservas; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0}">
+                            <td><strong>{{ reserva.nome }}</strong></td>
+                            <td>
+                                <a [href]="'mailto:' + reserva.email" class="email-link">{{ reserva.email }}</a>
+                            </td>
+                            <td>
+                                <a [href]="obterWhatsAppLink(reserva.telefone)" target="_blank" class="whatsapp-link">
+                                    {{ reserva.telefone }}
+                                </a>
+                            </td>
+                            <td>
+                                <strong *ngIf="reserva.Gato">{{ reserva.Gato.nome }} ({{ reserva.Gato.raca }})</strong>
+                                <span *ngIf="!reserva.Gato">—</span>
+                            </td>
+                            <td>{{ formatarData(reserva.data_solicitacao) }}</td>
+                            <td>
+                                <span *ngIf="reserva.status === 'pendente'" class="status-badge pending">Pendente</span>
+                                <span *ngIf="reserva.status === 'confirmada'" class="status-badge confirmed">Confirmada</span>
+                                <span *ngIf="reserva.status === 'cancelada'" class="status-badge cancelled">Cancelada</span>
+                            </td>
+                            <td class="actions-cell">
+                                <button mat-icon-button (click)="deletarReserva(reserva.id!)" matTooltip="Deletar" class="btn-delete">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card para Lista de Gatos Reservados -->
+    <div class="card" style="grid-column: 1 / -1;">
+        <div class="lista-gatos">
+            <header class="admin-section-header">
+                <h3>Gatos Reservados 🐱</h3>
+                <p class="admin-section-subtitle">Visualize todos os gatos que possuem reservas ativas.</p>
+            </header>
+
+            <div *ngIf="carregando" class="loading">Carregando gatos reservados...</div>
+            <div *ngIf="!carregando && gatosReservados.length === 0" class="empty">Nenhum gato reservado ainda.</div>
+
+            <div class="table-wrap" *ngIf="!carregando && gatosReservados.length > 0">
+                <table class="lista-table">
+                    <thead>
+                        <tr>
+                            <th>Imagem</th>
+                            <th>Nome</th>
+                            <th>Raça</th>
+                            <th>Sexo</th>
+                            <th>Coloração</th>
+                            <th>Tipo</th>
+                            <th>Idade</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let gato of gatosReservados; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0}">
+                            <td class="image-cell">
+                                <img *ngIf="gato.imagem" [src]="gato.imagem" alt="{{gato.nome}}" class="lista-img" />
+                                <span *ngIf="!gato.imagem">—</span>
+                            </td>
+                            <td>{{ gato.nome }}</td>
+                            <td>{{ gato.raca }}</td>
+                            <td>{{ gato.sexo }}</td>
+                            <td>{{ gato.coloracao }}</td>
+                            <td>{{ gato.tipo === 'gato' ? 'Gato Adulto' : 'Filhote' }}</td>
+                            <td>{{ gato.idade ? gato.idade + ' anos' : '—' }}</td>
+                            <td>{{ gato.status || '—' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

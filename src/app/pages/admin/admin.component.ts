@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GatoService, Gato } from '../../services/gato.service';
 import { NinhadaService, Ninhada } from '../../services/ninhada.service';
+import { ReservaService, Reserva } from '../../services/reserva.service';
 
 @Component({
   selector: 'app-admin',
@@ -13,6 +14,8 @@ export class AdminComponent implements OnInit {
   ninhadaForm: FormGroup;
   gatos: Gato[] = [];
   ninhadas: Ninhada[] = [];
+  reservas: Reserva[] = [];
+  gatosReservados: Gato[] = [];
   machos: Gato[] = [];
   femeas: Gato[] = [];
   editando: boolean = false;
@@ -29,7 +32,12 @@ export class AdminComponent implements OnInit {
 
   racas: string[] = ['Ragdoll', 'American Curl', 'Maine Coon', 'Siamês', 'Persa', 'Sphynx'];
 
-  constructor(private fb: FormBuilder, private gatoService: GatoService, private ninhadaService: NinhadaService) {
+  constructor(
+    private fb: FormBuilder,
+    private gatoService: GatoService,
+    private ninhadaService: NinhadaService,
+    private reservaService: ReservaService
+  ) {
     this.gatoForm = this.fb.group({
       nome: ['', Validators.required],
       raca: ['', Validators.required],
@@ -51,6 +59,8 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     this.listarGatos();
     this.listarNinhadas();
+    this.listarReservas();
+    this.listarGatosReservados();
   }
 
   onFileChange(event: any) {
@@ -146,6 +156,20 @@ export class AdminComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao listar gatos: ', err);
+        this.carregando = false;
+      }
+    });
+  }
+
+  listarGatosReservados(): void {
+    this.carregando = true;
+    this.gatoService.listarReservados().subscribe({
+      next: (resposta) => {
+        this.gatosReservados = resposta.dados || [];
+        this.carregando = false;
+      },
+      error: (err) => {
+        console.error('Erro ao listar gatos reservados: ', err);
         this.carregando = false;
       }
     });
@@ -364,6 +388,59 @@ export class AdminComponent implements OnInit {
         }
       });
     }
+  }
+
+  // ===== MÉTODOS DE RESERVAS =====
+  
+  listarReservas(): void {
+    this.reservaService.listar().subscribe({
+      next: (resposta) => {
+        this.reservas = resposta.dados || [];
+      },
+      error: (err) => {
+        console.error('Erro ao listar reservas: ', err);
+      }
+    });
+  }
+
+  obterNomeGato(gatoId: number): string {
+    const reserva = this.reservas.find(r => r.id === gatoId);
+    if (reserva && reserva.Gato) {
+      return reserva.Gato.nome;
+    }
+    return 'Desconhecido';
+  }
+
+  formatarData(data: any): string {
+    if (!data) return '—';
+    const date = new Date(data);
+    return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  obterWhatsAppLink(telefone: string): string {
+    const apenasNumeros = telefone.replace(/\D/g, '');
+    return `https://wa.me/${apenasNumeros}`;
+  }
+
+  deletarReserva(id: number): void {
+    if (!confirm('Tem certeza que deseja deletar esta reserva?')) {
+      return;
+    }
+
+    this.carregando = true;
+    this.reservaService.deletar(id).subscribe({
+      next: () => {
+        this.mensagem = '🗑️ Reserva deletada com sucesso!';
+        this.tipoMensagem = 'sucesso';
+        this.listarReservas();
+        this.carregando = false;
+      },
+      error: (err) => {
+        this.mensagem = 'Erro ao deletar reserva: ' + (err.error?.erro || 'Erro desconhecido');
+        this.tipoMensagem = 'erro';
+        this.carregando = false;
+      }
+    });
   }
 }
 

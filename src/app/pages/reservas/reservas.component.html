@@ -1,0 +1,70 @@
+<div class="reservas-container">
+  <!-- Header -->
+  <header class="reservas-header">
+    <h1>Filhotes Disponíveis para Reserva 🐱</h1>
+    <p class="subtitle">Escolha seu gatinho preferido e faça sua reserva</p>
+  </header>
+
+  <!-- Mensagem -->
+  <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" class="message">
+    {{ mensagem }}
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="carregando" class="loading">
+    <div class="spinner"></div>
+    <p>Carregando filhotes...</p>
+  </div>
+
+  <!-- Lista Vazia -->
+  <div *ngIf="!carregando && filhotes.length === 0" class="empty-state">
+    <mat-icon class="empty-icon">pets</mat-icon>
+    <h3>Nenhum filhote disponível no momento</h3>
+    <p>Volte em breve para conferir nossos novos filhotes!</p>
+  </div>
+
+  <!-- Grid de Cards -->
+  <div *ngIf="!carregando && filhotes.length > 0" class="filhotes-grid">
+    <div *ngFor="let filhote of filhotes" class="filhote-card">
+      <div class="card-image">
+        <img *ngIf="filhote.imagem" [src]="filhote.imagem" [alt]="filhote.nome" class="imagem"/>
+        <div *ngIf="!filhote.imagem" class="no-image">
+          <mat-icon>image_not_supported</mat-icon>
+        </div>
+        <span *ngIf="filhote.status === 'Disponível'" class="status-badge">Disponível</span>
+      </div>
+
+      <div class="card-content">
+        <h3 class="filhote-nome">{{ filhote.nome }}</h3>
+        
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Raça:</span>
+            <span class="value">{{ filhote.raca }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Sexo:</span>
+            <span class="value">{{ filhote.sexo }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Idade:</span>
+            <span class="value">{{ filhote.idade ? filhote.idade + ' anos' : 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Coloração:</span>
+            <span class="value">{{ filhote.coloracao }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="filhote.observacoes" class="observacoes">
+          <p>{{ filhote.observacoes }}</p>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="abrirModalReserva(filhote)" class="btn-reservar">
+          <mat-icon>favorite</mat-icon>
+          Reservar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
