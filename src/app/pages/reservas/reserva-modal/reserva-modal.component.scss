@@ -3,6 +3,7 @@
   --primary-color: #6a4b84;
   --secondary-color: #a66bb3;
   --accent-color: #3c1b5e;
+  --blue-dark: #1e3a8a;
   --light-bg: #faf5ff;
   --border-color: #e8deed;
   --text-color: #342548;
@@ -105,11 +106,12 @@
     }
 
     .btn-confirm {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      background: var(--blue-dark);
       color: white;
       transition: all 0.3s ease;
 
       &:hover:not(:disabled) {
+        background: #1e293b;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px var(--shadow);
       }
