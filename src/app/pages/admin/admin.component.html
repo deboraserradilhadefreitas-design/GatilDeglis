@@ -364,4 +364,90 @@
             </div>
         </div>
     </div>
+
+    <!-- Card para Lista de Contatos -->
+    <div class="card" style="grid-column: 1 / -1;">
+        <div class="lista-gatos">
+            <header class="admin-section-header">
+                <h3>Contatos Recebidos 💬</h3>
+                <p class="admin-section-subtitle">Gerencie as mensagens de contato recebidas dos visitantes.</p>
+                <div class="contatos-header-actions">
+                    <span class="contadores-badge">
+                        <mat-icon>mail</mat-icon>
+                        Total: {{ contatosContadores?.total || 0 }}
+                    </span>
+                    <span class="contadores-badge unread" *ngIf="contatosContadores?.naoLidos">
+                        <mat-icon>mail_outline</mat-icon>
+                        Não lidos: {{ contatosContadores?.naoLidos }}
+                    </span>
+                    <mat-form-field appearance="outline" class="filter-field">
+                        <mat-label>Filtrar por Status</mat-label>
+                        <mat-select (selectionChange)="filtrarContatos($event.value)">
+                            <mat-option value="">Todos</mat-option>
+                            <mat-option value="nao_lido">Não Lidos</mat-option>
+                            <mat-option value="lido">Lidos</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </header>
+
+            <div *ngIf="carregando" class="loading">Carregando contatos...</div>
+            <div *ngIf="!carregando && contatos.length === 0" class="empty">Nenhum contato recebido ainda.</div>
+
+            <div class="table-wrap" *ngIf="!carregando && contatos.length > 0">
+                <table class="lista-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;">Lido</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th>Raça</th>
+                            <th>Cidade</th>
+                            <th>Data</th>
+                            <th>Mensagem</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let contato of contatos; let i = index" 
+                            [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'unread-row': contato.status === 'nao_lido'}">
+                            <td class="status-cell">
+                                <mat-icon [ngClass]="{'icon-unread': contato.status === 'nao_lido', 'icon-read': contato.status === 'lido'}">
+                                    {{ contato.status === 'nao_lido' ? 'mail_outline' : 'mail' }}
+                                </mat-icon>
+                            </td>
+                            <td><strong>{{ contato.nome }}</strong></td>
+                            <td>
+                                <a [href]="'mailto:' + contato.email" class="email-link">{{ contato.email }}</a>
+                            </td>
+                            <td>
+                                <a [href]="obterWhatsAppLink(contato.telefone)" target="_blank" class="whatsapp-link">
+                                    {{ formatarTelefone(contato.telefone) }}
+                                </a>
+                            </td>
+                            <td>{{ contato.raca }}</td>
+                            <td>{{ contato.cidade }}</td>
+                            <td class="data-cell">{{ formatarData(contato.data_envio) }}</td>
+                            <td class="message-cell">
+                                <span class="message-preview">{{ contato.mensagem.substring(0, 50) }}{{ contato.mensagem.length > 50 ? '...' : '' }}</span>
+                                <mat-icon matTooltip="{{ contato.mensagem }}" class="tooltip-icon">info</mat-icon>
+                            </td>
+                            <td class="actions-cell">
+                                <button mat-icon-button 
+                                        (click)="alternarStatusContato(contato.id!, contato.status!)" 
+                                        [matTooltip]="contato.status === 'nao_lido' ? 'Marcar como lido' : 'Marcar como não lido'" 
+                                        class="btn-status">
+                                    <mat-icon>{{ contato.status === 'nao_lido' ? 'check_circle_outline' : 'cancel' }}</mat-icon>
+                                </button>
+                                <button mat-icon-button (click)="deletarContato(contato.id!)" matTooltip="Deletar" class="btn-delete">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

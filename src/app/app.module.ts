@@ -20,6 +20,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToastrModule } from 'ngx-toastr';
 
 
@@ -40,6 +43,10 @@ import { ToastrModule } from 'ngx-toastr';
     CommonModule,
     MatSelectModule,
     MatListModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
     ToastrModule.forRoot(),
     SharedModule
   ],

@@ -1,75 +1,207 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilsService } from '../../services/utils.service';
-import { producerUpdatesAllowed } from '@angular/core/primitives/signals';
-import { ToastrService } from 'ngx-toastr';
+import { ContatoService } from '../../services/contato.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contatos',
   templateUrl: './contatos.component.html',
   styleUrls: ['./contatos.component.scss']
 })
+export class ContatosComponent implements OnInit, OnDestroy {
+  form: FormGroup;
+  cidades: string[] = [];
+  racas: string[] = ['Ragdoll', 'American Curl', 'Maine Coon', 'Siamês', 'Persa', 'Sphynx'];
+  
+  mensagem: string = '';
+  tipoMensagem: 'sucesso' | 'erro' = 'sucesso';
+  enviando: boolean = false;
+  
+  private destroy$ = new Subject<void>();
+  private ultimoEnvio: number = 0;
+  private intervaloMinimo: number = 3000; // 3 segundos entre envios
 
-export class ContatosComponent {                              // Lógica do componente
-  title = 'gatilDeglis';
-  cidades: any;
-  teste: any;
-
-
-  form: FormGroup; // 🔹 Declara a propriedade
-
-    constructor(private serviceUtils: UtilsService, private toastr: ToastrService) {
-    // 🔹 Inicializa o formGroup com os campos necessários
+  constructor(
+    private serviceUtils: UtilsService,
+    private contatoService: ContatoService
+  ) {
     this.form = new FormGroup({
-      nome: new FormControl('', [Validators.required, Validators.pattern(/^[A-Za-zÀ-ÿ]+(?:\s[A-Za-zÀ-ÿ]+)+$/)]),
+      raca: new FormControl('', [Validators.required]),
+      nome: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^[A-Za-zÀ-ÿ]+(?:\s[A-Za-zÀ-ÿ]+)+$/)
+      ]),
       email: new FormControl('', [Validators.required, Validators.email]),
-      telefone: new FormControl('', [Validators.required, Validators.pattern(/^\d{10,11}$/)]), // Aceita 10 ou 11 dígitos
-      cidade: new FormControl(3550308, Validators.required),
-      mensagem: new FormControl('', Validators.required),
-      raca: new FormControl('', Validators.required)
+      telefone: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^\(\d{2}\)\s?9?\d{4}-\d{4}$|^\d{10,11}$/)
+      ]),
+      cidade: new FormControl('', [Validators.required]),
+      mensagem: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(500)
+      ])
     });
   }
 
-
-  ngOnInit(): void {              // Sempre que o site carregar, vai rodar ( Assim que o componente é carregado, a lista de cidades é preenchida.)
-    this.serviceUtils.getCidades().subscribe(data => {
-      this.cidades = data.map((cidade: any) => cidade.nome);
-    });
-
+  ngOnInit(): void {
+    this.carregarCidades();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
+  /**
+   * Carrega lista de cidades do serviço utils
+   */
+  private carregarCidades(): void {
+    this.serviceUtils.getCidades()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.cidades = data.map((cidade: any) => cidade.nome);
+        },
+        error: (err) => {
+          console.error('Erro ao carregar cidades:', err);
+          this.exibirMensagem('Erro ao carregar cidades', 'erro');
+        }
+      });
+  }
+
+  /**
+   * Formata o número de telefone enquanto o usuário digita
+   */
+  formatarTelefone(): void {
+    const telefoneControl = this.form.get('telefone');
+    if (telefoneControl) {
+      let valor = telefoneControl.value;
+      
+      // Remove caracteres não numéricos
+      valor = valor.replace(/\D/g, '');
+      
+      // Formata de acordo com o tamanho
+      if (valor.length === 10) {
+        valor = valor.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+      } else if (valor.length === 11) {
+        valor = valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+      } else if (valor.length > 0) {
+        valor = valor.substring(0, 11);
+      }
+      
+      telefoneControl.setValue(valor, { emitEvent: false });
+    }
+  }
+
+  /**
+   * Submete o formulário
+   */
+  onSubmit(): void {
+    // Validações adicionais
+    if (!this.form.valid) {
+      this.exibirMensagem('Por favor, preencha todos os campos corretamente', 'erro');
+      return;
+    }
+
+    // Previne envios duplicados
+    const agora = Date.now();
+    if (agora - this.ultimoEnvio < this.intervaloMinimo) {
+      this.exibirMensagem('Aguarde alguns segundos antes de enviar outra mensagem', 'erro');
+      return;
+    }
+
+    this.enviando = true;
+    this.ultimoEnvio = agora;
+
+    // Prepara dados para envio
+    const dados = {
+      raca: this.form.get('raca')?.value,
+      nome: this.form.get('nome')?.value.trim(),
+      email: this.form.get('email')?.value.trim(),
+      telefone: this.form.get('telefone')?.value.replace(/\D/g, ''),
+      cidade: this.form.get('cidade')?.value,
+      mensagem: this.form.get('mensagem')?.value.trim()
+    };
+
+    // Envia para o servidor
+    this.contatoService.criar(dados)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (resposta) => {
+          this.enviando = false;
+          
+          if (resposta.sucesso) {
+            this.exibirMensagem(
+              'Obrigado! Sua mensagem foi enviada com sucesso. Entraremos em contato em breve.',
+              'sucesso'
+            );
+            this.resetarForm();
+            
+            // Recarregar página após 3 segundos
+            setTimeout(() => {
+              window.location.reload();
+            }, 3000);
+          } else {
+            this.exibirMensagem('Erro ao enviar mensagem', 'erro');
+          }
+        },
+        error: (err) => {
+          this.enviando = false;
+          console.error('Erro ao enviar contato:', err);
+          
+          let mensagemErro = 'Erro ao enviar mensagem. Tente novamente.';
+          if (err.error && err.error.erro) {
+            mensagemErro = err.error.erro;
+          }
+          
+          this.exibirMensagem(mensagemErro, 'erro');
+        }
+      });
+  }
+
+  /**
+   * Reseta o formulário
+   */
+  resetarForm(): void {
+    this.form.reset({
+      raca: '',
+      nome: '',
+      email: '',
+      telefone: '',
+      cidade: '',
+      mensagem: ''
+    });
+  }
+
+  /**
+   * Getter para acessar campos do formulário
+   */
   get fields() {
-    return{
+    return {
+      raca: this.form.get('raca'),
       nome: this.form.get('nome'),
       email: this.form.get('email'),
       telefone: this.form.get('telefone'),
       cidade: this.form.get('cidade'),
-      mensagem: this.form.get('mensagem'),
-      raca: this.form.get('raca'),
+      mensagem: this.form.get('mensagem')
     };
   }
-  
 
-
-
-  showSuccess() {              // exibir uma notificação com Toastr,
-    if(this.form.valid) {
-      alert('Você enviou suas informações de contato, obrigado!')
-      this.toastr.success('Você preencheu o formulário!', 'SUCESSO!', {
-        timeOut: 3000,
-        positionClass: 'toast-bottom-right'
-      });
-    } else {
-      this.toastr.error('Formulário inválido!', 'ERRO!', {
-        timeOut: 3000,
-        positionClass: 'toast-bottom-right'
-      });
-    }
+  /**
+   * Exibe mensagem de feedback
+   */
+  private exibirMensagem(msg: string, tipo: 'sucesso' | 'erro'): void {
+    this.mensagem = msg;
+    this.tipoMensagem = tipo;
+    
+    setTimeout(() => {
+      this.mensagem = '';
+    }, 5000);
   }
-
-
-} 
+}
 
 
 

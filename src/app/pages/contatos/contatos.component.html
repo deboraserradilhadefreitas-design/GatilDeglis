@@ -1,90 +1,173 @@
 
+<div class="contatos-container">
+  <!-- Header -->
+  <header class="contatos-header">
+    <h1>Entre em Contato 💬</h1>
+    <p class="subtitle">Preencha o formulário abaixo e entraremos em contato com você em breve</p>
+  </header>
 
-<div class="container">
-    <div class="content">
-        <h1 class="color-name">ENTRE EM CONTATO </h1>
-        
-        <form [formGroup]="form">
-            <h4>Raça</h4>
-            <mat-form-field appearance="fill">
-                <mat-label>Raça</mat-label>
-                <mat-select formControlName="raca" required>
-                    <mat-option value="ragdoll">Ragdoll</mat-option>
-                    <mat-option value="americanCurl">American Curl </mat-option>
-                </mat-select>    
-            </mat-form-field>
+  <!-- Mensagens de feedback -->
+  <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" class="message">
+    {{ mensagem }}
+  </div>
 
-
-            <h4>Nome</h4>
-            <mat-form-field appearance="fill">               <!--  pode ser fill (fundo preenchido) ou outline (borda destacada) -->
-                <input  matInput formControlName="nome" type="text" required  placeholder="Digite seu Nome">
-                <mat-error *ngIf="fields.nome?.hasError('required')"> 
-                    O nome é obrigatório.
-                </mat-error>
-                <mat-error *ngIf="fields.nome?.hasError('pattern')"> 
-                    Digite nome e sobrenome corretamente.
-                </mat-error>
-            </mat-form-field>
-        
-        
-            <h4>Email</h4>
-            <mat-form-field appearance="fill">
-                <input matInput formControlName="email" type="email" required  placeholder="Digite seu e-mail">
-                <mat-error *ngIf="fields.email?.hasError('required')">
-                    O e-mail é obrigatório.
-                </mat-error>
-                <mat-error *ngIf="form.get('email')?.hasError('email')">
-                    Digite um e-mail válido.
-                </mat-error>
-            </mat-form-field>
-
-
-            <h4>Telefone</h4>
-            <mat-form-field appearance="fill">
-                <input matInput formControlName="telefone" type="text" placeholder="(99)9999-9999">
-                <mat-error *ngIf="fields.telefone?.hasError('required')">
-                    O telefone é obrigatório.
-                </mat-error>
-                <mat-error *ngIf="fields.telefone?.hasError('pattern')">
-                    Digite um número válido com 10 ou 11 dígitos.
-                </mat-error>
-            </mat-form-field>  
-
-
-            <h4>Cidade</h4>
-            <mat-form-field appearance="fill">
-                <mat-label>Cidade</mat-label>
-                <mat-select formControlName="cidade">
-                    <mat-option *ngFor="let cidade of cidades" [value]="cidade">
-                        {{ cidade }}
-                    </mat-option>
-                </mat-select>
-                <mat-error *ngIf="fields.cidade?.hasError('required')">
-                    A cidade é obrigatória.
-                </mat-error>
-            </mat-form-field>
-
-
-            <h4> Mensagem </h4>
-            <mat-form-field appearance="fill">
-                <mat-label>Mensagem</mat-label>    <!-- nome do campo  -->
-                <textarea matInput formControlName="mensagem" required></textarea>    <!-- <textarea> (com matInput) → Permite digitar textos longos. -->
-                <mat-error *ngIf="fields.mensagem?.hasError('required')">
-                    A mensagem é obrigatória.</mat-error>
-            </mat-form-field>
-
-        
-            <button mat-raised-button color="primary" type="submit" (click)="showSuccess()">  
-                Enviar
-            </button>
-
-        </form>    
+  <!-- Loading -->
+  <div *ngIf="enviando" class="loading-overlay">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Enviando mensagem...</p>
     </div>
+  </div>
+
+  <!-- Formulário -->
+  <div class="form-wrapper">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="contato-form">
+      
+      <!-- Row 1: Raça e Nome -->
+      <div class="form-row">
+        <div class="form-group col-md-6 col-sm-12">
+          <label for="raca" class="form-label">Raça de seu Interesse</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Selecione a raça</mat-label>
+            <mat-select formControlName="raca" id="raca">
+              <mat-option *ngFor="let raca of racas" [value]="raca">
+                {{ raca }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="fields.raca?.hasError('required')">
+              A raça é obrigatória
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6 col-sm-12">
+          <label for="nome" class="form-label">Nome Completo</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Seu nome</mat-label>
+            <input matInput formControlName="nome" id="nome" type="text" placeholder="João Silva">
+            <mat-error *ngIf="fields.nome?.hasError('required')">
+              O nome é obrigatório
+            </mat-error>
+            <mat-error *ngIf="fields.nome?.hasError('pattern')">
+              Digite um nome e sobrenome válido
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Row 2: Email e Telefone -->
+      <div class="form-row">
+        <div class="form-group col-md-6 col-sm-12">
+          <label for="email" class="form-label">E-mail</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>seu&#64;email.com</mat-label>
+            <input matInput formControlName="email" id="email" type="email" placeholder="seu&#64;email.com">
+            <mat-error *ngIf="fields.email?.hasError('required')">
+              O e-mail é obrigatório
+            </mat-error>
+            <mat-error *ngIf="fields.email?.hasError('email')">
+              Digite um e-mail válido
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6 col-sm-12">
+          <label for="telefone" class="form-label">Telefone</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>(99) 99999-9999</mat-label>
+            <input matInput formControlName="telefone" id="telefone" type="tel" 
+                   placeholder="(99) 99999-9999" (keyup)="formatarTelefone()">
+            <mat-error *ngIf="fields.telefone?.hasError('required')">
+              O telefone é obrigatório
+            </mat-error>
+            <mat-error *ngIf="fields.telefone?.hasError('pattern')">
+              Use 10 ou 11 dígitos
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Row 3: Cidade -->
+      <div class="form-row">
+        <div class="form-group col-12">
+          <label for="cidade" class="form-label">Cidade</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Selecione sua cidade</mat-label>
+            <mat-select formControlName="cidade" id="cidade">
+              <mat-option *ngFor="let cidade of cidades" [value]="cidade">
+                {{ cidade }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="fields.cidade?.hasError('required')">
+              A cidade é obrigatória
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Row 4: Mensagem -->
+      <div class="form-row">
+        <div class="form-group col-12">
+          <label for="mensagem" class="form-label">Mensagem / Assunto</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Digite sua mensagem...</mat-label>
+            <textarea matInput formControlName="mensagem" id="mensagem" 
+                      rows="5" placeholder="Digite sua mensagem aqui..."></textarea>
+            <mat-hint align="end">{{ form.get('mensagem')?.value?.length || 0 }}/500</mat-hint>
+            <mat-error *ngIf="fields.mensagem?.hasError('required')">
+              A mensagem é obrigatória
+            </mat-error>
+            <mat-error *ngIf="fields.mensagem?.hasError('maxlength')">
+              A mensagem não pode ter mais de 500 caracteres
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Botões -->
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid || enviando" 
+                class="btn-enviar">
+          <mat-icon *ngIf="!enviando">send</mat-icon>
+          <mat-icon *ngIf="enviando" class="spinner-icon">
+            <div class="spinner-mini"></div>
+          </mat-icon>
+          {{ enviando ? 'Enviando...' : 'Enviar Mensagem' }}
+        </button>
+        <button mat-stroked-button type="button" (click)="resetarForm()" [disabled]="enviando" 
+                class="btn-limpar">
+          <mat-icon>clear</mat-icon>
+          Limpar
+        </button>
+      </div>
+
+      <!-- Avisos de privacidade -->
+      <div class="privacy-notice">
+        <mat-icon>info</mat-icon>
+        <p>Seus dados serão armazenados com segurança e não serão compartilhados com terceiros.</p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Informações adicionais -->
+  <div class="contact-info">
+    <div class="info-card">
+      <mat-icon class="info-icon">schedule</mat-icon>
+      <h4>Tempo de Resposta</h4>
+      <p>Respondemos em até 24 horas</p>
+    </div>
+    <div class="info-card">
+      <mat-icon class="info-icon">verified</mat-icon>
+      <h4>Seguro</h4>
+      <p>Seus dados estão seguros conosco</p>
+    </div>
+    <div class="info-card">
+      <mat-icon class="info-icon">support_agent</mat-icon>
+      <h4>Suporte</h4>
+      <p>Equipe dedicada a ajudar você</p>
+    </div>
+  </div>
 </div>
-
-
-
-
 
 
 
