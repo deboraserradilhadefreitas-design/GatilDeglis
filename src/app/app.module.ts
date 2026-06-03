@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { ContatosComponent } from './pages/contatos/contatos.component';
 import { HomeComponent } from './pages/home/home.component';
+import { GaleriaComponent } from './pages/galeria/galeria.component';
 import { UtilsService } from './services/utils.service';
 import { SharedModule } from './shared/shared.module';
 
@@ -31,6 +32,7 @@ import { ToastrModule } from 'ngx-toastr';
     AppComponent,
     ContatosComponent,
     HomeComponent,
+    GaleriaComponent
   ],
   imports: [                                //bibliotecas
     BrowserModule,

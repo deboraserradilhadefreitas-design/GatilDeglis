@@ -149,6 +149,77 @@
         </div>
     </div>
 
+    <!-- Card para Gerenciar Galeria -->
+    <div class="card">
+        <div class="form-container">
+            <form [formGroup]="galeriaForm" (ngSubmit)="onSubmitGaleria()" enctype="multipart/form-data">
+                <header class="admin-section-header">
+                    <h2>{{ editandoGaleria ? 'Editar Legenda da Galeria' : 'Gerenciar Galeria' }}</h2>
+                    <p class="admin-section-subtitle">Adicione novas imagens ou edite legendas dos itens já cadastrados.</p>
+                </header>
+
+                <div *ngIf="mensagem" [ngClass]="{'mensagem-sucesso': tipoMensagem === 'sucesso', 'mensagem-erro': tipoMensagem === 'erro'}" class="message">
+                    {{ mensagem }}
+                </div>
+
+                <div class="form-field">
+                    <mat-label>Imagem da Galeria:</mat-label>
+                    <input type="file" (change)="onFileChangeGaleria($event)" accept="image/*" class="file-input">
+                </div>
+
+                <div class="preview-container" *ngIf="galeriaPreview">
+                    <p>Prévia da imagem:</p>
+                    <img class="preview-img" [src]="galeriaPreview" alt="Prévia da galeria" />
+                </div>
+
+                <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Legenda (opcional):</mat-label>
+                    <textarea matInput formControlName="legenda" rows="3"></textarea>
+                </mat-form-field>
+
+                <div class="button-group">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="carregando" class="btn-submit">
+                        <mat-icon *ngIf="!carregando">{{ editandoGaleria ? 'edit' : 'add_photo_alternate' }}</mat-icon>
+                        {{ carregando ? (editandoGaleria ? 'Atualizando...' : 'Adicionando...') : (editandoGaleria ? 'Salvar Legenda' : 'Adicionar à Galeria') }}
+                    </button>
+                    <button mat-button type="button" *ngIf="editandoGaleria" (click)="cancelarEdicaoGaleria()" class="btn-cancel">
+                        <mat-icon>cancel</mat-icon>
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="lista-galeria">
+            <header class="admin-section-header">
+                <h3>Fotos da Galeria</h3>
+                <p class="admin-section-subtitle">Visualize, edite legendas ou exclua imagens cadastradas.</p>
+            </header>
+
+            <div *ngIf="carregando" class="loading">Carregando galeria...</div>
+            <div *ngIf="!carregando && galeriaLista.length === 0" class="empty">Nenhuma imagem cadastrada na galeria ainda.</div>
+
+            <div class="galeria-grid" *ngIf="!carregando && galeriaLista.length > 0">
+                <div class="galeria-card" *ngFor="let item of galeriaLista">
+                    <img *ngIf="item.url" [src]="item.url" [alt]="item.legenda || 'Imagem da galeria'" />
+                    <div class="galeria-card-content">
+                        <p *ngIf="item.legenda" class="galeria-caption">{{ item.legenda }}</p>
+                        <div class="card-actions">
+                            <button mat-icon-button (click)="editarGaleria(item)" matTooltip="Editar Legenda" class="btn-edit">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="deletarGaleria(item.id!)" matTooltip="Excluir" class="btn-delete">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Card para Cadastro de Ninhadas -->
     <div class="card">
         <div class="form-container">

@@ -4,6 +4,7 @@ import { GatoService, Gato } from '../../services/gato.service';
 import { NinhadaService, Ninhada } from '../../services/ninhada.service';
 import { ReservaService, Reserva } from '../../services/reserva.service';
 import { ContatoService, Contato } from '../../services/contato.service';
+import { GaleriaService, GaleriaItem } from '../../services/galeria.service';
 
 @Component({
   selector: 'app-admin',
@@ -29,11 +30,17 @@ export class AdminComponent implements OnInit {
   ninhadaEditandoId: number | null = null;
   imagemPreview: string | ArrayBuffer | null = null;
   imagemNinhadaPreview: string | ArrayBuffer | null = null;
+  galeriaPreview: string | ArrayBuffer | null = null;
   mensagem: string = '';
   tipoMensagem: 'sucesso' | 'erro' = 'sucesso';
   carregando: boolean = false;
   imagemFile: File | null = null;
   imagemNinhadaFile: File | null = null;
+  galeriaFile: File | null = null;
+  galeriaLista: GaleriaItem[] = [];
+  editandoGaleria: boolean = false;
+  galeriaEditandoId: number | null = null;
+  galeriaForm: FormGroup;
 
   racas: string[] = ['Ragdoll', 'American Curl', 'Maine Coon', 'Siamês', 'Persa', 'Sphynx'];
 
@@ -42,7 +49,8 @@ export class AdminComponent implements OnInit {
     private gatoService: GatoService,
     private ninhadaService: NinhadaService,
     private reservaService: ReservaService,
-    private contatoService: ContatoService
+    private contatoService: ContatoService,
+    private galeriaService: GaleriaService
   ) {
     this.gatoForm = this.fb.group({
       nome: ['', Validators.required],
@@ -60,6 +68,10 @@ export class AdminComponent implements OnInit {
       mae_id: ['', Validators.required],
       quantidade_filhotes: ['', [Validators.required, Validators.min(1)]]
     });
+
+    this.galeriaForm = this.fb.group({
+      legenda: ['']
+    });
   }
 
   ngOnInit(): void {
@@ -68,6 +80,7 @@ export class AdminComponent implements OnInit {
     this.listarReservas();
     this.listarGatosReservados();
     this.listarContatos();
+    this.listarGaleria();
   }
 
   onFileChange(event: any) {
@@ -177,6 +190,138 @@ export class AdminComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao listar gatos reservados: ', err);
+        this.carregando = false;
+      }
+    });
+  }
+
+  onFileChangeGaleria(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.galeriaFile = file;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.galeriaPreview = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  private construirFormDataGaleria(): FormData {
+    const formData = new FormData();
+
+    if (this.galeriaFile) {
+      formData.append('imagem', this.galeriaFile);
+    }
+
+    const legenda = this.galeriaForm.get('legenda')?.value;
+    if (legenda !== null && legenda !== undefined) {
+      formData.append('legenda', legenda);
+    }
+
+    return formData;
+  }
+
+  private resetGaleriaForm(): void {
+    this.galeriaForm.reset();
+    this.galeriaFile = null;
+    this.galeriaPreview = null;
+    this.editandoGaleria = false;
+    this.galeriaEditandoId = null;
+  }
+
+  listarGaleria(): void {
+    this.carregando = true;
+    this.galeriaService.listar().subscribe({
+      next: (resposta) => {
+        this.galeriaLista = resposta.dados || [];
+        this.carregando = false;
+      },
+      error: (err) => {
+        console.error('Erro ao listar galeria: ', err);
+        this.mensagem = 'Erro ao carregar galeria.';
+        this.tipoMensagem = 'erro';
+        this.carregando = false;
+      }
+    });
+  }
+
+  onSubmitGaleria() {
+    if (!this.editandoGaleria && !this.galeriaFile) {
+      this.mensagem = 'Por favor, selecione uma imagem para a galeria.';
+      this.tipoMensagem = 'erro';
+      return;
+    }
+
+    this.carregando = true;
+    const formData = this.construirFormDataGaleria();
+
+    if (this.editandoGaleria && this.galeriaEditandoId !== null) {
+      this.galeriaService.atualizarLegenda(this.galeriaEditandoId, formData).subscribe({
+        next: () => {
+          this.mensagem = 'Legenda atualizada com sucesso!';
+          this.tipoMensagem = 'sucesso';
+          this.resetGaleriaForm();
+          this.listarGaleria();
+          this.carregando = false;
+        },
+        error: (err) => {
+          this.mensagem = 'Erro ao atualizar legenda: ' + (err.error?.erro || 'Erro desconhecido');
+          this.tipoMensagem = 'erro';
+          this.carregando = false;
+        }
+      });
+    } else {
+      this.galeriaService.criar(formData).subscribe({
+        next: () => {
+          this.mensagem = 'Imagem adicionada à galeria com sucesso!';
+          this.tipoMensagem = 'sucesso';
+          this.resetGaleriaForm();
+          this.listarGaleria();
+          this.carregando = false;
+        },
+        error: (err) => {
+          this.mensagem = 'Erro ao adicionar imagem: ' + (err.error?.erro || 'Erro desconhecido');
+          this.tipoMensagem = 'erro';
+          this.carregando = false;
+        }
+      });
+    }
+  }
+
+  editarGaleria(item: GaleriaItem): void {
+    this.editandoGaleria = true;
+    this.galeriaEditandoId = item.id ?? null;
+    this.galeriaForm.patchValue({
+      legenda: item.legenda || ''
+    });
+    this.galeriaPreview = item.url || null;
+    this.mensagem = 'Modo edição de legenda ativado. Salve para aplicar as alterações.';
+    this.tipoMensagem = 'sucesso';
+  }
+
+  cancelarEdicaoGaleria(): void {
+    this.resetGaleriaForm();
+    this.mensagem = '';
+  }
+
+  deletarGaleria(id: number): void {
+    if (!confirm('Tem certeza que deseja remover esta imagem da galeria?')) {
+      return;
+    }
+
+    this.carregando = true;
+    this.galeriaService.deletar(id).subscribe({
+      next: () => {
+        this.mensagem = 'Imagem excluída com sucesso!';
+        this.tipoMensagem = 'sucesso';
+        this.listarGaleria();
+        this.carregando = false;
+      },
+      error: (err) => {
+        this.mensagem = 'Erro ao excluir imagem: ' + (err.error?.erro || 'Erro desconhecido');
+        this.tipoMensagem = 'erro';
         this.carregando = false;
       }
     });

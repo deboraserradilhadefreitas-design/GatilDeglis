@@ -1,0 +1,35 @@
+<section class="galeria-page">
+  <div class="galeria-header">
+    <div class="galeria-header-content">
+      <span class="galeria-label">Galeria de momentos</span>
+      <h1>Galeria</h1>
+      <p>Momentos Especiais dos Nossos Felinos.</p>
+    </div>
+  </div>
+
+  <div *ngIf="carregando" class="galeria-status">
+    <div class="loader"></div>
+    <span>Carregando fotos...</span>
+  </div>
+
+  <div *ngIf="!carregando && erro" class="galeria-status galeria-error">
+    {{ erro }}
+  </div>
+
+  <div *ngIf="!carregando && !erro && imagens.length === 0" class="galeria-status galeria-empty">
+    Ainda não há imagens cadastradas. Volte em breve para ver as novidades da galeria.
+  </div>
+
+  <div class="galeria-grid" *ngIf="!carregando && !erro && imagens.length > 0">
+    <article class="galeria-card" *ngFor="let imagem of imagens; trackBy: trackByImagem">
+      <div class="galeria-card-inner">
+        <div class="galeria-card-media">
+          <img [src]="imagem.url" [alt]="imagem.legenda || 'Foto da galeria'" loading="lazy" />
+        </div>
+        <div class="galeria-card-footer">
+          <p class="galeria-caption">{{ imagem.legenda || 'Foto da nossa família felina' }}</p>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
